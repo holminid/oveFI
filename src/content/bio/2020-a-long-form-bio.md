@@ -1,6 +1,6 @@
 ---
 title: A Long-Form Bio
-date: 2020-01-01
+date: "2020-01-01"
 ---
 This is the expanded biography section. It may contain **older photographic works** and longer contextual texts. Use this space to narrate background, processes, and related notes.
 
