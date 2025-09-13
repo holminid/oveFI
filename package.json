@@ -1,0 +1,29 @@
+{
+  "name": "ove-fi-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "test:assets": "node scripts/check-assets.mjs",
+    "migrate:videos": "node scripts/migrate-youtube.mjs",
+    "zip": "zip -r ove-fi-site.zip . -x 'node_modules/*' '.git/*' '*.zip'"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^3.1.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "@fontsource/inter": "^5.0.0",
+    "astro": "^4.12.0",
+    "photoswipe": "^5.4.4",
+    "tailwindcss": "^3.4.10",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/typography": "^0.5.12",
+    "typescript": "^5.6.2"
+  }
+}

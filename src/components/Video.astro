@@ -1,0 +1,16 @@
+---
+interface Props {
+  src: string;
+  poster?: string;
+  aspect?: '16:9' | '4:3';
+  captions?: { src: string; srclang: string; label: string; default?: boolean }[];
+}
+const { src, poster, aspect = '16:9', captions = [] } = Astro.props as Props;
+const aspectClass = aspect === '4:3' ? 'aspect-[4/3]' : 'aspect-video';
+---
+<div class={`w-full ${aspectClass}`}>
+  <video controls preload="metadata" poster={poster} class="w-full h-full object-cover" style="background:#000">
+    <source src={src} type="video/mp4" />
+    {captions.map(c => (<track kind="captions" src={c.src} srclang={c.srclang} label={c.label} {...(c.default ? { default: true } : {})} />))}
+  </video>
+</div>

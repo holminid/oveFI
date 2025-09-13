@@ -1,0 +1,15 @@
+name: Package ZIP
+on:
+  workflow_dispatch:
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create ZIP (no node_modules/.git)
+        run: |
+          zip -r ove-fi-site.zip . -x 'node_modules/*' '.git/*' '*.zip'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ove-fi-site
+          path: ove-fi-site.zip

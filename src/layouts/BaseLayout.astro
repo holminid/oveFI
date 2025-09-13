@@ -1,0 +1,37 @@
+---
+import '../styles/global.css';
+const { title = 'ove.fi', description = 'Artist site', lang = 'en' } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-brandYellow text-black px-3 py-1 rounded">Skip to content</a>
+    <header class="container py-6 flex items-center justify-between">
+      <a href="/" class="font-medium">ove.fi</a>
+      <nav class="space-x-4">
+        <a href="/works">Works</a>
+        <a href="/about">About</a>
+        <a href="/music-tech">Music Tech</a>
+        <a href="/contact">Contact</a>
+      </nav>
+    </header>
+    <main id="main" class="container pb-16">
+      <slot />
+    </main>
+    <footer class="container py-12 text-sm text-neutral-500">
+      © {new Date().getFullYear()} ove.fi
+    </footer>
+    <style is:global>
+      @import '@fontsource/inter/400.css';
+      @import '@fontsource/inter/500.css';
+      @import '@fontsource/inter/700.css';
+    </style>
+  </body>
+</html>

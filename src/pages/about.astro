@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+const bios = await getCollection('bio');
+const sorted = bios.sort((a, b) => (a.data.date < b.data.date ? 1 : -1));
+const rendered = await Promise.all(sorted.map(async (b) => {
+  const { Content, data } = await b.render();
+  return { Content, data };
+}));
+---
+<BaseLayout title="About — ove.fi">
+  <h1 class="text-2xl mb-6">About</h1>
+  <details class="mb-8" open>
+    <summary class="cursor-pointer select-none">Bio</summary>
+    <div class="mt-4 space-y-8">
+      {rendered.map(({ Content, data }) => (
+        <section>
+          <h2 class="text-xl">{data.title}</h2>
+          <time class="text-sm text-neutral-500">{data.date}</time>
+          <div class="prose max-w-none mt-2"><Content /></div>
+        </section>
+      ))}
+    </div>
+  </details>
+
+  <p>For the full list of works, see <a href="/works">Works</a>.</p>
+</BaseLayout>

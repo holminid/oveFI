@@ -1,0 +1,51 @@
+name: Deploy ove.fi (SFTP)
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      remote_path:
+        description: "Override remote path (optional)"
+        required: false
+      port:
+        description: "Override SFTP port (optional)"
+        required: false
+jobs:
+  qa:
+    name: Build + checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci || npm i
+      - run: npm run check
+      - run: npm run build
+      - run: node scripts/check-assets.mjs
+  build-and-deploy:
+    name: Upload via SFTP
+    runs-on: ubuntu-latest
+    needs: qa
+    concurrency:
+      group: sftp-deploy
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci || npm i
+      - run: npm run build
+      - name: Deploy via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+        with:
+          username: ${{ secrets.SFTP_USER }}
+          server: ${{ secrets.SFTP_HOST }}
+          port: ${{ github.event.inputs.port || vars.SFTP_PORT }}
+          ssh_private_key: ${{ secrets.SFTP_PRIVATE_KEY }}
+          local_path: './dist/*'
+          remote_path: ${{ github.event.inputs.remote_path || vars.SFTP_REMOTE_PATH }}
+          sftp_only: true

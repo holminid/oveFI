@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light dark; }
+html { -webkit-text-size-adjust: 100%; }
+body { @apply font-sans text-neutral-900 bg-white antialiased; }
+
+a { @apply underline-offset-2 decoration-2; }
+a:hover { @apply underline decoration-brandYellow; }
+a:focus-visible { @apply outline-none ring-2 ring-brandYellow; }
+
+img { height: auto; }
+.container { @apply max-w-4xl mx-auto px-4; }
