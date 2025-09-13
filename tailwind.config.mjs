@@ -1,7 +1,6 @@
-// File: tailwind.config.mjs  (add colors; if you use .cjs, see note below)
-import { defineConfig } from 'tailwindcss'
-
-export default defineConfig({
+// File: tailwind.config.mjs
+/** @type {import('tailwindcss').Config} */
+export default {
   content: ['./src/**/*.{astro,html,js,jsx,ts,tsx,md,mdx}'],
   theme: {
     extend: {
@@ -12,4 +11,4 @@ export default defineConfig({
     },
   },
   plugins: [],
-})
+};
