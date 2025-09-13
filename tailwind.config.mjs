@@ -1,16 +1,15 @@
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+// File: tailwind.config.mjs  (add colors; if you use .cjs, see note below)
+import { defineConfig } from 'tailwindcss'
+
+export default defineConfig({
+  content: ['./src/**/*.{astro,html,js,jsx,ts,tsx,md,mdx}'],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      colors: {
+        brandPaper: '#f4e3d1',
+        brandYellow: '#ffd600',
       },
-      colors: { brandYellow: '#ffd600' }
     },
   },
-  plugins: [
-    require('@tailwindcss/aspect-ratio'),
-    require('@tailwindcss/typography')
-  ],
-};
+  plugins: [],
+})
