@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 import BaseLayout from '../layouts/BaseLayout.astro';
 const base = import.meta.env.BASE_URL;
 ---
@@ -7,6 +8,30 @@ const base = import.meta.env.BASE_URL;
     <img src={`${base}logo.png`} alt="Ove Holmqvist logo" width="320" height="320" class="w-40 h-auto" />
     <p class="mt-6 max-w-prose">
       Explore <a href={`${base}works`}>Works</a> or read the <a href={`${base}about`}>About</a> section.
+=======
+// File: src/pages/index.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL; // makes / and GitHub Pages both work
+---
+<BaseLayout title="ove.fi — Home" description="Artist site">
+  <section class="py-10 space-y-6">
+    <!-- Uses your uploaded public/logo.png; falls back to public/logo.svg if missing -->
+    <img
+      src={`${base}logo.png`}
+      alt="Ove Holmqvist logo"
+      width="320"
+      height="320"
+      class="w-40 h-auto"
+      onerror={`this.onerror=null;this.src='${base}logo.svg'`}
+    />
+
+    <h1 class="text-2xl font-medium">Ove Holmqvist</h1>
+
+    <p class="max-w-prose">
+      Explore <a href={`${base}works`}>Works</a>, read the <a href={`${base}about`}>About</a> section,
+      or visit <a href={`${base}music-tech`}>Music Tech</a>.
+>>>>>>> 8ea1a4f (test)
     </p>
   </section>
 </BaseLayout>
+
