@@ -1,4 +1,7 @@
 ---
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/700.css';
 import '../styles/global.css';
 const { title = 'ove.fi', description = 'Artist site', lang = 'en' } = Astro.props;
 ---
@@ -11,7 +14,7 @@ const { title = 'ove.fi', description = 'Artist site', lang = 'en' } = Astro.pro
     <title>{title}</title>
     <link rel="icon" href="data:," />
   </head>
-  <body class="bg-[#FAF7E6]">
+<body>
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-brandYellow text-black px-3 py-1 rounded">Skip to content</a>
     <header class="container py-6 flex items-center justify-between">
       <a href="/" class="font-medium">ove.fi</a>
