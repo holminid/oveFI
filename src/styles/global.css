@@ -1,24 +1,31 @@
+/* File: src/styles/global.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: light dark; }
-html { -webkit-text-size-adjust: 100%; }
-- body { @apply font-sans text-neutral-900 bg-white antialiased; }
-+ /* Remove bg-white so it doesn't override the page class */
-+ body { @apply font-sans text-neutral-900 antialiased; background:#FAF7E6; }
+/* Gentle top→white fade using #f4e3d1 */
+:root {
+  color-scheme: light;
+  --paper-top:    #f4e3d1; /* your color */
+  --paper-bridge: #faeee3; /* lighter bridge */
+  --paper-white:  #ffffff; /* pure white */
+}
 
-a { @apply underline-offset-2 decoration-2; }
-a:hover { @apply underline decoration-brandYellow; }
-a:focus-visible { @apply outline-none ring-2 ring-brandYellow; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  @apply font-sans text-neutral-900 antialiased;
+  background: linear-gradient(
+    180deg,
+    var(--paper-top) 0%,
+    var(--paper-bridge) 16%,
+    var(--paper-white) 32%
+  ) fixed;
+}
+
+/* Links: minimalist + yellow underline on hover */
+a { text-decoration: underline; text-underline-offset: 2px; text-decoration-color: transparent; }
+a:hover { text-decoration-color: #ffd600; }
 
 img { height: auto; }
 .container { @apply max-w-4xl mx-auto px-4; }
-:root {
--  --paper-top: #fffdf2;
--  --paper-mid: #fffef9;
--  --paper-bottom: #ffffff;
-+  --paper-top: #f4e3d1;  /* your color */
-+  --paper-mid: #fff6eb;  /* lighter bridge */
-+  --paper-bottom: #ffffff;
-}
