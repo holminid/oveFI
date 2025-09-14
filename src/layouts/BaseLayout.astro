@@ -33,14 +33,14 @@ const base = import.meta.env.BASE_URL;
     {ogImageAbs && <meta name="twitter:image" content={ogImageAbs} />}
   </head>
   <body>
-    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-yellow-300 text-black px-3 py-1 rounded">Skip to content</a>
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-brandComplement text-black px-3 py-1 rounded">Skip to content</a>
     <header class="container py-6 flex items-center justify-between">
       <a href={base} class="font-medium">ove.fi</a>
       <nav class="space-x-4">
-        <a href={`${base}works`}>Works</a>
-        <a href={`${base}about`}>About</a>
-        <a href={`${base}music-tech`}>Music Tech</a>
-        <a href={`${base}contact`}>Contact</a>
+        <a class="hover:decoration-brandComplement" href={`${base}works`}>Works</a>
+        <a class="hover:decoration-brandComplement" href={`${base}about`}>About</a>
+        <a class="hover:decoration-brandComplement" href={`${base}music-tech`}>Music Tech</a>
+        <a class="hover:decoration-brandComplement" href={`${base}contact`}>Contact</a>
       </nav>
     </header>
     <main id="main" class="container pb-16">
