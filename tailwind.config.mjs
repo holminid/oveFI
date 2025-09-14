@@ -5,8 +5,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        brandPaper: '#f4e3d1',
-        brandYellow: '#ffd600',
+        brandPaper: '#f4e3d1',        // Albescent White
+        brandTriadic: '#d1f4e3',
+        brandComplement: '#d1e2f4',
+        brandSplitComplement: '#dbf4d1',
       },
     },
   },
