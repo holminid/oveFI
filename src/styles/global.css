@@ -3,10 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Gentle top→white fade using #f4e3d1 */
+/* Gentle top→white fade using your paper color */
 :root {
   color-scheme: light;
-  --paper-top:    #f4e3d1; /* your color */
+  --paper-top:    #f4e3d1; /* Albescent White */
   --paper-bridge: #faeee3; /* lighter bridge */
   --paper-white:  #ffffff; /* pure white */
 }
@@ -23,9 +23,18 @@ body {
   ) fixed;
 }
 
-/* Links: minimalist + yellow underline on hover */
-a { text-decoration: underline; text-underline-offset: 2px; text-decoration-color: transparent; }
-a:hover { text-decoration-color: #ffd600; }
+/* Link style: underline appears on hover in brandComplement */
+a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: transparent;
+}
+a:hover {
+  text-decoration-color: #d1e2f4; /* brandComplement */
+}
 
+/* Helpers */
 img { height: auto; }
 .container { @apply max-w-4xl mx-auto px-4; }
+/* Optional soft paper box */
+.paper { background: #f4e3d1; }
