@@ -1,25 +1,147 @@
 ---
-// File: src/pages/index.astro
-import BaseLayout from '../layouts/BaseLayout.astro';
-const base = import.meta.env.BASE_URL;
+// File: src/pages/works/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Helper: get YouTube video ID from multiple URL shapes
+function ytId(raw) {
+  try {
+    const u = new URL(raw);
+    if (u.hostname === 'youtu.be') return u.pathname.slice(1);
+    if (u.searchParams.get('v')) return u.searchParams.get('v');
+    // shorts or /embed/
+    const parts = u.pathname.split('/').filter(Boolean);
+    const ix = parts.findIndex((p) => p === 'embed' || p === 'shorts');
+    if (ix >= 0 && parts[ix + 1]) return parts[ix + 1];
+  } catch {
+    // last chance: regex
+    const m = String(raw).match(/[\/?&]v=([\w-]{11})|youtu\.be\/([\w-]{11})/);
+    if (m) return m[1] || m[2];
+  }
+  return '';
+}
+
+// Selected works at the top (from your messages)
+const selected = [
+  {
+    title: 'Gesture/posture setup in BC wilderness',
+    url: 'https://youtu.be/VC8aeMf59Jo',
+    note: 'Wireless, battery-powered gesture/posture controlled setup.',
+  },
+  {
+    title: 'Adaptive patch — public artwork proposal (2023)',
+    url: 'https://youtu.be/AUBEsPSuHws',
+    note: 'Adaptive generative patch demonstration.',
+  },
+  {
+    title: 'Holonic dance performance (2019)',
+    url: 'https://youtu.be/0OfQKiKl2Mc',
+    note: 'Controls sound synthesis, DMX lighting and effects.',
+  },
+  {
+    title: 'Tara Hodgson — Eixample intervention (2018)',
+    url: 'https://youtu.be/x2jDpOBTe0A',
+    note: 'Generative music from dance movement.',
+  },
+  {
+    title: 'First rehearsal — Marina Tsougrianis (2024)',
+    url: 'https://youtu.be/hmEyrgvQcpA',
+    note: 'Orbit Princess collaboration.',
+  },
+  {
+    title: 'Fundación Espacio Creativo — piece 1 (2020)',
+    url: 'https://youtu.be/3xSNOjSpOAA',
+    note: 'Technical implementation, choreography, interactive music.',
+  },
+  {
+    title: 'Fundación Espacio Creativo — piece 2 (2020)',
+    url: 'https://youtu.be/KkcNqCAEmNo',
+    note: 'Companion performance clip.',
+  },
+  {
+    title: 'Lockdown geospatial mappings (2020)',
+    url: 'https://youtu.be/EC3-HHieHUw',
+    note: 'Experimenting with geospatial data ↔ music.',
+  },
+  {
+    title: 'Posture/gesture augmented electroacoustic (2020)',
+    url: 'https://youtu.be/1oRwDbToddA',
+    note: 'Augmented performance study.',
+  },
+];
+
+// Safely read the `works` collection (optional Markdown items)
+let works = [];
+try {
+  works = await getCollection('works');
+} catch {
+  works = [];
+}
+
+// Render collection entries (guarded)
+const rendered = await Promise.all(
+  works.map(async (entry) => {
+    const r = await entry.render().catch(() => null);
+    return {
+      id: entry.id,
+      data: entry.data ?? {},
+      Content: r ? r.Content : null,
+    };
+  })
+);
+
+// Sort newest first if `date` present
+rendered.sort((a, b) => {
+  const ad = a.data?.date ?? '';
+  const bd = b.data?.date ?? '';
+  return ad < bd ? 1 : ad > bd ? -1 : 0;
+});
 ---
-<BaseLayout title="ove.fi — Home" description="Artist site">
-  <section class="py-10 space-y-6">
-    <div class="inline-block p-4 rounded-2xl bg-brandPaper">
-      <img
-        src={`${base}logo.png`}
-        alt="Ove Holmqvist logo"
-        width="320"
-        height="320"
-        class="w-40 h-auto"
-        onerror={`this.onerror=null;this.src='${base}logo.svg'`}
-      />
+<BaseLayout title="Works — ove.fi" description="Selected works and archive">
+  <section class="space-y-8">
+    <h1 class="text-2xl font-medium">Selected works</h1>
+
+    <div class="grid gap-8 md:grid-cols-2">
+      {selected.map((s) => {
+        const id = ytId(s.url);
+        const src = id ? `https://www.youtube.com/embed/${id}` : '';
+        return (
+          <figure class="space-y-2" aria-labelledby={id ? `${id}-cap` : undefined}>
+            <div class="relative w-full pt-[56.25%] bg-black/5 rounded-xl overflow-hidden">
+              {id ? (
+                <iframe
+                  src={`${src}?rel=0`}
+                  title={s.title}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  class="absolute inset-0 h-full w-full border-0"
+                />
+              ) : (
+                <a href={s.url} class="absolute inset-0 flex items-center justify-center underline hover:decoration-brandComplement">Watch: {s.title}</a>
+              )}
+            </div>
+            <figcaption id={id ? `${id}-cap` : undefined} class="text-sm text-neutral-600">
+              <span class="font-medium">{s.title}</span>
+              {s.note && <span> — {s.note}</span>}
+            </figcaption>
+          </figure>
+        );
+      })}
     </div>
-    <h1 class="text-2xl font-medium">Ove Holmqvist</h1>
-    <p class="max-w-prose">
-      Explore <a class="hover:decoration-brandComplement" href={`${base}works`}>Works</a>,
-      read the <a class="hover:decoration-brandComplement" href={`${base}about`}>About</a> section,
-      or visit <a class="hover:decoration-brandComplement" href={`${base}music-tech`}>Music Tech</a>.
-    </p>
+
+    <h2 class="text-xl font-medium pt-4">All works</h2>
+    {rendered.length === 0 ? (
+      <p class="text-neutral-500">No collection entries yet. Add Markdown files under <code>src/content/works/</code>.</p>
+    ) : (
+      <div class="grid gap-8 md:grid-cols-2">
+        {rendered.map(({ id, data, Content }) => (
+          <article id={id} class="space-y-2 border-t pt-4">
+            <h3 class="font-medium">{data?.title ?? 'Untitled'}{data?.date ? ` — ${data.date}` : ''}</h3>
+            {Content ? <Content /> : <p class="text-neutral-500">(No details.)</p>}
+          </article>
+        ))}
+      </div>
+    )}
   </section>
 </BaseLayout>
