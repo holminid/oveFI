@@ -1,4 +1,3 @@
-# .github/workflows/preview.yml
 name: Preview (GitHub Pages)
 
 on:
@@ -22,15 +21,13 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - name: Install deps (ci if lockfile, else i)
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm i
-          fi
+
+      - name: Install deps
+        run: npm i
+
       - name: Build
         run: npm run build
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
