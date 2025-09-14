@@ -3,20 +3,23 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 const base = import.meta.env.BASE_URL;
 ---
-<BaseLayout title="ove.fi — Home" description="Ove Holmqvist">
+<BaseLayout title="ove.fi — Home" description="Artist site">
   <section class="py-10 space-y-6">
-    <img
-      src={`${base}logo.png`}
-      alt="Ove Holmqvist logo"
-      width="320"
-      height="320"
-      class="w-40 h-auto"
-      onerror={`this.onerror=null;this.src='${base}logo.svg'`}
-    />
+    <div class="inline-block p-4 rounded-2xl bg-brandPaper">
+      <img
+        src={`${base}logo.png`}
+        alt="Ove Holmqvist logo"
+        width="320"
+        height="320"
+        class="w-40 h-auto"
+        onerror={`this.onerror=null;this.src='${base}logo.svg'`}
+      />
+    </div>
     <h1 class="text-2xl font-medium">Ove Holmqvist</h1>
     <p class="max-w-prose">
-      Explore <a href={`${base}works`}>Works</a>, read the <a href={`${base}about`}>About</a> section,
-      or visit <a href={`${base}music-tech`}>Music Tech</a>.
+      Explore <a class="hover:decoration-brandComplement" href={`${base}works`}>Works</a>,
+      read the <a class="hover:decoration-brandComplement" href={`${base}about`}>About</a> section,
+      or visit <a class="hover:decoration-brandComplement" href={`${base}music-tech`}>Music Tech</a>.
     </p>
   </section>
 </BaseLayout>
