@@ -1,0 +1,29 @@
+name: AI Summary
+on:
+  issue_comment:
+    types: [created]
+  pull_request:
+    types: [labeled]
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+jobs:
+  summarize:
+    if: >
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/summary')) ||
+      (github.event_name == 'pull_request' && github.event.label.name == 'ai:review')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install PyGithub requests
+      - name: Summarize PR and propose next steps
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_API_BASE: ${{ secrets.AI_API_BASE }}
+          AI_MODEL: ${{ secrets.AI_MODEL }}
+        run: python scripts/ai_summary.py
