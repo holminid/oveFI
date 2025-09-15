@@ -1,0 +1,56 @@
+name: Analyze repository (AI)
+on:
+  workflow_dispatch:
+    inputs:
+      target_ref:
+        description: "Branch or tag to analyze"
+        required: false
+        default: "main"
+permissions:
+  contents: write
+  issues: write
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests PyGithub
+      - name: Analyze codebase
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_API_BASE: ${{ secrets.AI_API_BASE }}
+          AI_MODEL: ${{ secrets.AI_MODEL }}
+        run: python scripts/analyze_repo.py
+      - name: Commit artifacts
+        run: |
+          git config user.name "analyzer-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add docs/ARCHITECTURE.md reports/analysis.json || true
+          git commit -m "chore: update ARCHITECTURE.md from analyzer" || echo "No changes"
+          git push || true
+      - name: Open/Update analysis issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+import os, github
+from github import Github
+h = github.Auth.Token(os.environ["GH_TOKEN"])
+gh = Github(auth=h)
+owner, repo = os.environ["GITHUB_REPOSITORY"].split("/")
+r = gh.get_repo(f"{owner}/{repo}")
+title = "AI Codebase Analysis"
+body = open("docs/ARCHITECTURE.md","r",encoding="utf-8").read()
+for i in r.get_issues(state="open"):
+    if i.title==title:
+        i.edit(body=body)
+        break
+else:
+    r.create_issue(title=title, body=body)
+print("Posted analysis.")
+PY
