@@ -6,6 +6,7 @@ import traceback
 def parse_args():
     p = argparse.ArgumentParser(description="Analysis CLI")
     p.add_argument("--input", "-i", type=str, help="Input file or directory", required=False)
+    p.add_argument("--mapping", type=str, help="Pipeline configuration YAML")
     p.add_argument("--jsonl", action="store_true", help="Output JSONL")
     p.add_argument("--aggregate", action="store_true", help="Aggregate results")
     p.add_argument("--html", action="store_true", help="Generate HTML output")
@@ -23,7 +24,7 @@ def main():
             traceback.print_exc()
             sys.exit(1)
     try:
-        pipeline = Pipeline()
+        pipeline = Pipeline(mapping_path=args.mapping)
         try:
             pipeline.run(args)
         except TypeError:
