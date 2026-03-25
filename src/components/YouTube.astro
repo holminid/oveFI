@@ -5,11 +5,11 @@ interface Props {
   aspect?: '16:9' | '4:3';
 }
 const { id, title = 'YouTube video', aspect = '16:9' } = Astro.props as Props;
-const aspectClass = aspect === '4:3' ? 'aspect-[4/3]' : 'aspect-video';
+const aspectRatio = aspect === '4:3' ? '4 / 3' : '16 / 9';
 ---
-<div class={`w-full ${aspectClass}`}>
+<div class="youtube-frame" style={`aspect-ratio: ${aspectRatio};`}>
   <iframe
-    class="w-full h-full"
+    class="youtube-frame__embed"
     src={`https://www.youtube-nocookie.com/embed/${id}`}
     title={title}
     loading="lazy"
@@ -21,3 +21,16 @@ const aspectClass = aspect === '4:3' ? 'aspect-[4/3]' : 'aspect-video';
 <noscript>
   <p><a href={`https://youtu.be/${id}`}>{title}</a></p>
 </noscript>
+
+<style>
+  .youtube-frame {
+    width: 100%;
+  }
+
+  .youtube-frame__embed {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+</style>

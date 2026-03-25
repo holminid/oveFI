@@ -1,0 +1,106 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import YouTube from '@/components/YouTube.astro';
+import Video from '@/components/Video.astro';
+import LightboxInit from '@/components/LightboxInit.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const works = await getCollection('works');
+  return works.map((w) => ({ params: { slug: w.slug }, props: { w } }));
+}
+
+const { w } = Astro.props;
+const { Content } = await w.render();
+const chips = [...(w.data.featureScale ?? []), ...(w.data.systems ?? []), ...(w.data.relatedTags ?? [])];
+---
+
+<BaseLayout title={`${w.data.title} — ove.fi`} description={w.data.summary ?? 'Work entry'}>
+  <article class="prose-ove work-entry">
+    <header class="mb-6">
+      <h1 class="text-2xl mb-2">{w.data.title}</h1>
+      <p class="meta" style="color: var(--muted);">
+        <time>{w.data.date}</time> · {w.data.mediaType}
+      </p>
+    </header>
+
+    <figure class="cover">
+      <img
+        src={w.data.cover.src}
+        width={w.data.cover.width}
+        height={w.data.cover.height}
+        alt={w.data.cover.alt}
+      />
+    </figure>
+
+    {w.data.summary && (
+      <p class="mt-4 max-w-prose">{w.data.summary}</p>
+    )}
+
+    {chips.length > 0 && (
+      <div class="tags mt-5" aria-label="Related tags">
+        {chips.map((chip) => (
+          <span class="tag">{chip}</span>
+        ))}
+      </div>
+    )}
+
+    <div class="prose max-w-none mt-6">
+      <Content />
+    </div>
+
+    {(w.data.externalVideos?.length ?? 0) > 0 && (
+      <section class="mt-8">
+        <h2 class="text-xl">Video</h2>
+        <div class="space-y-6">
+          {w.data.externalVideos.map((v) => (
+            <YouTube id={v.id} title={v.title ?? w.data.title} aspect={v.aspect} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {(w.data.videos?.length ?? 0) > 0 && (
+      <section class="mt-8">
+        <h2 class="text-xl">Video files</h2>
+        <div class="space-y-6">
+          {w.data.videos.map((v) => (
+            <Video src={v.src} poster={v.poster} aspect={v.aspect} captions={v.captions} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {(w.data.images?.length ?? 0) > 0 && (
+      <section class="mt-8">
+        <h2 class="text-xl">Images</h2>
+        <div class="pswp-gallery grid grid-cols-1 md:grid-cols-2 gap-4">
+          {w.data.images.map((img) => (
+            <a href={img.src} data-pswp-width={img.width} data-pswp-height={img.height} class="image-card">
+              <img src={img.src} width={img.width} height={img.height} alt={img.alt} loading="lazy" class="w-full h-auto" />
+            </a>
+          ))}
+        </div>
+        <LightboxInit />
+      </section>
+    )}
+
+    <p class="meta mt-10">
+      <a href="/works/">Back to Works</a>
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .work-entry {
+    max-width: 72rem;
+  }
+
+  .image-card {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.78);
+  }
+</style>

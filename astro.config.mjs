@@ -1,13 +1,15 @@
-// File: astro.config.mjs
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
-
-const repo = process.env.GITHUB_REPOSITORY?.split('/')[1] ?? '';
-const onPages = !!process.env.GITHUB_ACTIONS;
-const base = onPages && repo ? `/${repo}/` : '/';
+import tailwind from '@astrojs/tailwind';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
-  site: 'https://holminid.github.io', // preview only
-  base,
-  integrations: [mdx()],
+  site: 'https://ove.fi',
+  output: 'static',
+  integrations: [mdx(), tailwind({ applyBaseStyles: false })],
+  vite: {
+    resolve: {
+      alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+    },
+  },
 });

@@ -1,40 +1,121 @@
-/* File: src/styles/global.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Gentle top→white fade using your paper color */
-:root {
-  color-scheme: light;
-  --paper-top:    #f4e3d1; /* Albescent White */
-  --paper-bridge: #faeee3; /* lighter bridge */
-  --paper-white:  #ffffff; /* pure white */
-}
-
+:root { color-scheme: light; }
 html { -webkit-text-size-adjust: 100%; }
+
+/* Light-key, warm base */
+:root {
+  --paper: #F5F0E6;
+  --wash: rgba(245, 240, 230, 0.56);
+  --line: rgba(77, 111, 115, 0.18);
+  --ink: #1b1b1b;
+  --muted: rgba(27, 27, 27, 0.62);
+  --radius: 14px;
+}
 
 body {
   @apply font-sans text-neutral-900 antialiased;
-  background: linear-gradient(
-    180deg,
-    var(--paper-top) 0%,
-    var(--paper-bridge) 16%,
-    var(--paper-white) 32%
-  ) fixed;
+  background: #efdbc8;
+  color: var(--ink);
 }
 
-/* Link style: underline appears on hover in brandComplement */
 a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-color: transparent;
-}
-a:hover {
-  text-decoration-color: #d1e2f4; /* brandComplement */
+  text-underline-offset: 0.15em;
 }
 
-/* Helpers */
+a:hover {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-decoration-color: currentColor;
+}
+a:focus-visible { @apply outline-none ring-2 ring-brandYellow; }
+
 img { height: auto; }
-.container { @apply max-w-4xl mx-auto px-4; }
-/* Optional soft paper box */
-.paper { background: #f4e3d1; }
+.container { @apply max-w-6xl mx-auto px-4; }
+.site-header {
+  display: grid;
+  justify-items: center;
+  gap: 0.95rem;
+  padding-top: 1.8rem;
+  padding-bottom: 1.35rem;
+}
+.site-mark {
+  display: inline-flex;
+  text-decoration: none;
+}
+.site-mark__frame {
+  display: inline-flex;
+  align-items: flex-start;
+  width: 7rem;
+  height: auto;
+  overflow: visible;
+}
+.site-mark__image {
+  display: block;
+  width: 100%;
+  object-fit: contain;
+  height: auto;
+}
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.15rem;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+  transform: translateX(0.5rem);
+}
+.site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+.site-nav a:hover,
+.site-nav a:focus-visible,
+.site-nav a[aria-current='page'] {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+/* Conservative catalogue typography */
+.prose-ove h1, .prose-ove h2, .prose-ove h3 {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.prose-ove p, .prose-ove li {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.meta, .tags, nav a {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+/* Panels */
+.card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.rule { border-top: 1px solid var(--line); }
+
+/* Tags */
+.tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.76);
+  border-radius: 999px;
+  padding: 0.18rem 0.62rem;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.tag--sage { border-color: rgba(191, 217, 194, 0.85); }
+
+/* Media */
+.cover { border-radius: 12px; border: 1px solid var(--line); overflow: hidden; }
+.cover img { width: 100%; display: block; }

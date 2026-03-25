@@ -1,147 +1,242 @@
 ---
-// File: src/pages/works/index.astro
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-
-// Helper: get YouTube video ID from multiple URL shapes
-function ytId(raw) {
-  try {
-    const u = new URL(raw);
-    if (u.hostname === 'youtu.be') return u.pathname.slice(1);
-    if (u.searchParams.get('v')) return u.searchParams.get('v');
-    // shorts or /embed/
-    const parts = u.pathname.split('/').filter(Boolean);
-    const ix = parts.findIndex((p) => p === 'embed' || p === 'shorts');
-    if (ix >= 0 && parts[ix + 1]) return parts[ix + 1];
-  } catch {
-    // last chance: regex
-    const m = String(raw).match(/[\/?&]v=([\w-]{11})|youtu\.be\/([\w-]{11})/);
-    if (m) return m[1] || m[2];
-  }
-  return '';
-}
-
-// Selected works at the top (from your messages)
-const selected = [
-  {
-    title: 'Gesture/posture setup in BC wilderness',
-    url: 'https://youtu.be/VC8aeMf59Jo',
-    note: 'Wireless, battery-powered gesture/posture controlled setup.',
-  },
-  {
-    title: 'Adaptive patch — public artwork proposal (2023)',
-    url: 'https://youtu.be/AUBEsPSuHws',
-    note: 'Adaptive generative patch demonstration.',
-  },
-  {
-    title: 'Holonic dance performance (2019)',
-    url: 'https://youtu.be/0OfQKiKl2Mc',
-    note: 'Controls sound synthesis, DMX lighting and effects.',
-  },
-  {
-    title: 'Tara Hodgson — Eixample intervention (2018)',
-    url: 'https://youtu.be/x2jDpOBTe0A',
-    note: 'Generative music from dance movement.',
-  },
-  {
-    title: 'First rehearsal — Marina Tsougrianis (2024)',
-    url: 'https://youtu.be/hmEyrgvQcpA',
-    note: 'Orbit Princess collaboration.',
-  },
-  {
-    title: 'Fundación Espacio Creativo — piece 1 (2020)',
-    url: 'https://youtu.be/3xSNOjSpOAA',
-    note: 'Technical implementation, choreography, interactive music.',
-  },
-  {
-    title: 'Fundación Espacio Creativo — piece 2 (2020)',
-    url: 'https://youtu.be/KkcNqCAEmNo',
-    note: 'Companion performance clip.',
-  },
-  {
-    title: 'Lockdown geospatial mappings (2020)',
-    url: 'https://youtu.be/EC3-HHieHUw',
-    note: 'Experimenting with geospatial data ↔ music.',
-  },
-  {
-    title: 'Posture/gesture augmented electroacoustic (2020)',
-    url: 'https://youtu.be/1oRwDbToddA',
-    note: 'Augmented performance study.',
-  },
-];
-
-// Safely read the `works` collection (optional Markdown items)
-let works = [];
-try {
-  works = await getCollection('works');
-} catch {
-  works = [];
-}
-
-// Render collection entries (guarded)
-const rendered = await Promise.all(
-  works.map(async (entry) => {
-    const r = await entry.render().catch(() => null);
-    return {
-      id: entry.id,
-      data: entry.data ?? {},
-      Content: r ? r.Content : null,
-    };
-  })
-);
-
-// Sort newest first if `date` present
-rendered.sort((a, b) => {
-  const ad = a.data?.date ?? '';
-  const bd = b.data?.date ?? '';
-  return ad < bd ? 1 : ad > bd ? -1 : 0;
-});
+import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
-<BaseLayout title="Works — ove.fi" description="Selected works and archive">
-  <section class="space-y-8">
-    <h1 class="text-2xl font-medium">Selected works</h1>
-
-    <div class="grid gap-8 md:grid-cols-2">
-      {selected.map((s) => {
-        const id = ytId(s.url);
-        const src = id ? `https://www.youtube.com/embed/${id}` : '';
-        return (
-          <figure class="space-y-2" aria-labelledby={id ? `${id}-cap` : undefined}>
-            <div class="relative w-full pt-[56.25%] bg-black/5 rounded-xl overflow-hidden">
-              {id ? (
-                <iframe
-                  src={`${src}?rel=0`}
-                  title={s.title}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen
-                  class="absolute inset-0 h-full w-full border-0"
-                />
-              ) : (
-                <a href={s.url} class="absolute inset-0 flex items-center justify-center underline hover:decoration-brandComplement">Watch: {s.title}</a>
-              )}
-            </div>
-            <figcaption id={id ? `${id}-cap` : undefined} class="text-sm text-neutral-600">
-              <span class="font-medium">{s.title}</span>
-              {s.note && <span> — {s.note}</span>}
-            </figcaption>
-          </figure>
-        );
-      })}
+<BaseLayout title="ove.fi — Home" description="Artist site" hideHeader={true} hideFooter={true}>
+  <section class="splash-stage">
+    <div class="splash-header">
+      <a href="/" class="site-mark" aria-label="Home">
+        <span class="splash-mark__frame">
+          <img src="/images/ove-logo-exact.png" alt="Ove geometric logo" class="splash-mark__image" />
+        </span>
+      </a>
     </div>
 
-    <h2 class="text-xl font-medium pt-4">All works</h2>
-    {rendered.length === 0 ? (
-      <p class="text-neutral-500">No collection entries yet. Add Markdown files under <code>src/content/works/</code>.</p>
-    ) : (
-      <div class="grid gap-8 md:grid-cols-2">
-        {rendered.map(({ id, data, Content }) => (
-          <article id={id} class="space-y-2 border-t pt-4">
-            <h3 class="font-medium">{data?.title ?? 'Untitled'}{data?.date ? ` — ${data.date}` : ''}</h3>
-            {Content ? <Content /> : <p class="text-neutral-500">(No details.)</p>}
-          </article>
-        ))}
+    <div class="splash-panel">
+      <div class="splash-grid">
+        <figure class="splash-frame">
+          <img
+            src="/images/splash-archival-portrait.png"
+            width="1711"
+            height="1279"
+            alt="Archival portrait of Ove Holmqvist"
+            class="splash-image"
+          />
+        </figure>
+
+        <div class="splash-copy prose-ove">
+          <div class="splash-copy-main">
+            <h1 class="text-4xl mb-6">Ove Holmqvist</h1>
+            <div class="splash-links meta">
+              <a href="/about" class="role-link">
+                <span class="role-link__base">Artist</span>
+                <span class="role-link__alt">Sound Artist</span>
+              </a>
+              <a href="/works" class="role-link">
+                <span class="role-link__base">Designer</span>
+                <span class="role-link__alt">Interaction Designer</span>
+              </a>
+              <a href="/works#research-education" class="role-link">
+                <span class="role-link__base">Technologist</span>
+                <span class="role-link__alt">Music Technologist</span>
+              </a>
+            </div>
+          </div>
+
+          <footer class="splash-footer meta">
+            <a href="mailto:ove@ove.fi">ove@ove.fi</a>
+          </footer>
+        </div>
       </div>
-    )}
+    </div>
   </section>
 </BaseLayout>
+
+<style>
+  .splash-stage {
+    position: relative;
+    left: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    min-height: 100svh;
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    padding: 1.8rem 1rem 2rem;
+    background: #efdbc8;
+  }
+
+  .splash-header {
+    width: min(100%, 72rem);
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3.8rem;
+  }
+
+  .splash-panel {
+    width: min(100%, 54rem);
+    min-height: 34rem;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(27, 27, 27, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 18px 48px rgba(27, 27, 27, 0.08);
+  }
+
+  .splash-mark__frame {
+    display: inline-flex;
+    width: 7rem;
+  }
+
+  .splash-mark__image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .splash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 34rem;
+  }
+
+  .splash-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 10% 11%;
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .splash-frame {
+    margin: 0;
+    min-height: 34rem;
+  }
+
+  .splash-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 34rem;
+    padding: 2.5rem 2.7rem 2rem;
+  }
+
+  .splash-copy-main {
+    width: max-content;
+    max-width: 100%;
+    margin: auto;
+    padding-top: 2.35rem;
+    display: grid;
+    justify-items: center;
+  }
+
+  .splash-links {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 1.12rem;
+    justify-items: end;
+    width: 100%;
+    margin: 0;
+  }
+
+  .role-link {
+    position: relative;
+    display: inline-grid;
+    justify-items: end;
+    min-width: 0;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .role-link > span {
+    grid-area: 1 / 1;
+    transition: opacity 140ms ease;
+  }
+
+  .role-link__alt {
+    opacity: 0;
+  }
+
+  .role-link:hover,
+  .role-link:focus-visible {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-style: dotted;
+  }
+
+  .role-link:hover .role-link__base,
+  .role-link:focus-visible .role-link__base {
+    opacity: 0;
+  }
+
+  .role-link:hover .role-link__alt,
+  .role-link:focus-visible .role-link__alt {
+    opacity: 1;
+  }
+
+  .splash-footer {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .splash-copy h1 {
+    font-size: clamp(2rem, 4vw, 2.55rem);
+    line-height: 1.08;
+    white-space: nowrap;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+  }
+
+  @media (max-width: 900px) {
+    .splash-stage {
+      padding: 1.8rem 1rem 1.25rem;
+      align-content: start;
+    }
+
+    .splash-header {
+      width: min(100%, 72rem);
+      margin-bottom: 0.75rem;
+    }
+
+    .splash-panel {
+      min-height: 0;
+    }
+
+    .splash-grid {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+
+    .splash-frame {
+      min-height: 19rem;
+    }
+
+    .splash-copy {
+      min-height: 0;
+      max-width: none;
+      padding: 1.35rem;
+      text-align: left;
+    }
+
+    .splash-copy-main {
+      width: 100%;
+      padding-top: 0;
+    }
+
+    .splash-links {
+      justify-items: start;
+      transform: none;
+    }
+
+    .role-link {
+      min-width: 0;
+      justify-items: start;
+    }
+
+    .splash-copy h1 {
+      white-space: normal;
+    }
+  }
+</style>

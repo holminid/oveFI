@@ -1,0 +1,1349 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Video from '@/components/Video.astro';
+import YouTube from '@/components/YouTube.astro';
+import { getCollection } from 'astro:content';
+
+const defaultSlug = 'triadic-mutualism';
+const selectedSlugs = [
+  'triadic-mutualism',
+  'chimerik-improvised-performance-unity-consciousness-festival',
+  'interactive-soundwalk-bc-ai-future-proof-creatives-vancouver',
+  'aerialist-ilona-j-ntti-edu-dutch-design-week-2020',
+  'fundaci-n-espacio-creativo-interactive-music-panama',
+  'interactive-folk-music-creative-europe-c-dare-bidf',
+  'holonic-dance-sound-synthesis-dmx-lighting-stage-effects',
+  'adaptive-patch-for-a-public-artwork-proposal'
+];
+const hiddenListSlugs = new Set([
+  'beddit',
+  'fundaci-n-espacio-creativo-second-clip-panama',
+  'holonic-dance-sound-synthesis-dmx-lighting-stage-effects',
+  'first-rehearsal-with-marina-tsougrianis-orbit-princess',
+  'gesture-posture-controlled-wilderness-setup-british-columbia',
+  'lockdown-composition-geospatial-data-mappings',
+  'posture-gesture-augmented-electroacoustic-lockdown-performance'
+]);
+
+const works = (await getCollection('works')).sort((a, b) => {
+  const aOrder = selectedSlugs.indexOf(a.slug);
+  const bOrder = selectedSlugs.indexOf(b.slug);
+
+  if (aOrder !== -1 || bOrder !== -1) {
+    if (aOrder === -1) return 1;
+    if (bOrder === -1) return -1;
+    return aOrder - bOrder;
+  }
+
+  return a.data.date < b.data.date ? 1 : -1;
+});
+
+const fecSecondClip = works
+  .find((work) => work.slug === 'fundaci-n-espacio-creativo-second-clip-panama')
+  ?.data.externalVideos.find((video) => video.kind === 'youtube' && video.id);
+
+const triadicViewerCopy = `This piece was created in collaboration with Ezequiel Peralta for PXR Conference 2026. Shown simultaneously at VIVO Media Arts in Vancouver, BC, Toronto and Kingston, Ontario, it is a networked participatory audiovisual environment in which collective movement becomes the driving force of a shared musical and ecological system. Visitors encounter a luminous field on the floor that appears responsive but not didactic. As they move, pause, follow, gather, or disperse, they begin to perceive that the environment is listening to qualities of behaviour rather than simple triggers. Musical changes emerge from their collective activity, while smaller zones allow them to engage with remote sites, summon exchanges, or influence other communities. Over time, the piece reveals itself as a social instrument and an ecological score, an emergent multi-agent system whose local and global states are continuously negotiated through motion, attention, exchange, and co-presence.
+
+Across multiple sites, geographically distributed audiences can influence one another through designated portal zones that connect remote locations in real time. These cross-site exchanges are framed through bioinformed concepts such as migration, diversity, metabolic balance, flock health, and resource circulation. When groups become active, coordinated, or mutually responsive, the system produces events such as tokens, exchanges, or energetic shifts that alter both the local visual field and the evolving musical form.
+
+The project sits at the intersection of participatory installation, embodied sonification, social choreography, and systems art. It proposes music not as a fixed composition, but as an emergent property of collective behavior. The audience does not simply activate content; it enters into a reciprocal relation with a dynamic environment that listens, interprets, and responds at the scale of both the individual and the group.
+
+Its telematic structure extends the work beyond a single site, allowing audiences in different cities to encounter one another as abstract presences inside a shared ecological-musical world. This creates a distributed public made legible through movement, rhythm, and changing systemic conditions rather than language alone. The work therefore offers a live model of interdependence: between bodies and sound, between local action and remote consequence, and between individual agency and collective form.`;
+
+const stripExcerpt = (value: string) =>
+  value
+    .replace(/^import\s.+$/gm, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[`*_>#-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const preparedWorks = works.map((work) => {
+  const isMusicForBuildings = work.slug === 'adaptive-patch-for-a-public-artwork-proposal';
+  const isTriadic = work.slug === 'triadic-mutualism';
+  const isSoundwalk = work.slug === 'interactive-soundwalk-bc-ai-future-proof-creatives-vancouver';
+  const isFecAlgo = work.slug === 'fundaci-n-espacio-creativo-interactive-music-panama';
+  const copySource = isMusicForBuildings
+    ? 'In this piece, GPS coordinates are used as musical events and modifiers. This marks my first foray into spatial computing, courtesy of Holonic\'s partnership with Bose. The Bose AR system enabled true, non-optical positioning and Auditory AR, in this case gaze-controlled spatial music. The old Coast Plaza Hotel seems to be haunted by John Foxx’s CR-78.'
+    : isTriadic
+      ? triadicViewerCopy
+    : isSoundwalk
+      ? (work.body?.trim() || work.data.summary || '').replace(/\n!\[[^\]]*\]\([^)]+\)\n/g, '\n')
+      : work.body?.trim() || work.data.summary || '';
+  const rawCopyParagraphs = copySource
+    .split(/\n\s*\n/)
+    .map((paragraph) => stripExcerpt(paragraph))
+    .filter(Boolean);
+  const copyParagraphs = isFecAlgo ? rawCopyParagraphs.slice(0, -1) : rawCopyParagraphs;
+  const firstExternalVideo = isMusicForBuildings
+    ? { kind: 'youtube', id: 'wDzCtorUS2A', title: 'Augmented Aural Reality: Music For Buildings pt. 1', aspect: '16:9' as const }
+    : work.data.externalVideos.find((video) => video.kind === 'youtube' && video.id);
+  const firstVideo = work.data.videos[0];
+
+  return {
+    work,
+    copyParagraphs,
+    firstExternalVideo,
+    firstVideo,
+    secondaryExternalVideo:
+      isFecAlgo ? fecSecondClip ?? null : null,
+    postSecondaryExternalVideoParagraph: isFecAlgo ? rawCopyParagraphs.at(-1) ?? null : null,
+    inlineImage:
+      isSoundwalk
+        ? {
+            src: '/works/interactive-soundwalk-bc-ai-future-proof-creatives-vancouver/sound-walk_h.jpg',
+            alt: 'Socio-spatial soundwalk image',
+            insertAfterParagraph: 3
+          }
+        : null,
+    placeholderImage: isTriadic
+      ? {
+          src: '/works/triadic-mutualism-pxr-conference/triadic-1.jpg',
+          alt: 'Triadic Mutualism installation view'
+        }
+      : null
+  };
+});
+
+const selectedPreparedWorks = selectedSlugs
+  .map((slug) => preparedWorks.find(({ work }) => work.slug === slug))
+  .filter(Boolean);
+const defaultWork = selectedPreparedWorks.find(({ work }) => work.slug === defaultSlug)?.work ?? selectedPreparedWorks[0]?.work ?? works[0];
+const listedWorks = selectedPreparedWorks.filter(({ work }) => !hiddenListSlugs.has(work.slug));
+const bedditWork = preparedWorks.find(({ work }) => work.slug === 'beddit');
+const bedditLeadParagraph = bedditWork?.copyParagraphs[0] ?? '';
+const bedditTailParagraphs = bedditWork?.copyParagraphs.slice(1) ?? [];
+const bedditLeadMarker = 'My work for Beddit included';
+const [bedditLeadIntro, bedditLeadFollowUp] = bedditLeadParagraph.includes(bedditLeadMarker)
+  ? [
+      bedditLeadParagraph.slice(0, bedditLeadParagraph.indexOf(bedditLeadMarker)).trim(),
+      bedditLeadParagraph.slice(bedditLeadParagraph.indexOf(bedditLeadMarker)).trim()
+    ]
+  : [bedditLeadParagraph, ''];
+
+const displayTitleBySlug = new Map([
+  ['triadic-mutualism', 'Triadic Mutualism - Intercity Synchronicity'],
+  ['chimerik-improvised-performance-unity-consciousness-festival', 'Biomechanical Duet'],
+  ['interactive-soundwalk-bc-ai-future-proof-creatives-vancouver', 'Socio-Spatial Computing for Soundwalks'],
+  ['fundaci-n-espacio-creativo-interactive-music-panama', 'F.E.C. ALGO Project'],
+  ['interactive-folk-music-creative-europe-c-dare-bidf', 'Vibes #5: Interactive Choreography and Folk Music'],
+  ['aerialist-ilona-j-ntti-edu-dutch-design-week-2020', 'Office Intervention @ Dutch Design Week'],
+  ['holonic-dance-sound-synthesis-dmx-lighting-stage-effects', 'Dance performance by Anna Serra at Hangar.org in Barcelona'],
+  ['adaptive-patch-for-a-public-artwork-proposal', 'Augmented Aural Reality: Music For Buildings pt. 1']
+]);
+
+const getDisplayTitle = (slug: string, fallback: string) => displayTitleBySlug.get(slug) ?? fallback;
+---
+
+<BaseLayout title="Works — ove.fi" description="Selected work">
+  <section class="works-page">
+    <div class="prose-ove works-section-heading works-section-heading--selected">
+      <h2 class="text-2xl mb-0">Selected works</h2>
+    </div>
+
+    <div class="works-shell">
+      <div class="works-main">
+        <section class="card works-section">
+          <div class="works-viewer">
+            {selectedPreparedWorks.map(({ work, copyParagraphs, firstExternalVideo, firstVideo, secondaryExternalVideo, postSecondaryExternalVideoParagraph, inlineImage, placeholderImage }) => {
+              const meta = [work.data.date, work.data.location].filter(Boolean).join(' · ');
+
+              return (
+                <article
+                  class:list={['work-panel', { 'is-active': work.slug === defaultWork.slug }]}
+                  data-work-panel
+                  data-slug={work.slug}
+                  hidden={work.slug !== defaultWork.slug}
+                >
+                  <div class="viewer-frame">
+                    {firstExternalVideo ? (
+                      <YouTube id={firstExternalVideo.id} title={firstExternalVideo.title ?? work.data.title} aspect={firstExternalVideo.aspect} />
+                    ) : firstVideo ? (
+                      <Video src={firstVideo.src} poster={firstVideo.poster} aspect={firstVideo.aspect} captions={firstVideo.captions} />
+                    ) : placeholderImage ? (
+                      <img
+                        src={placeholderImage.src}
+                        width="4032"
+                        height="3024"
+                        alt={placeholderImage.alt}
+                        class="viewer-frame-image"
+                      />
+                    ) : (
+                      <div class="placeholder-panel">Documentation in progress.</div>
+                    )}
+                  </div>
+
+                  <div class="mt-5 prose-ove work-panel-copy">
+                    <h1 class="text-2xl mb-2">{getDisplayTitle(work.slug, work.data.title)}</h1>
+                    {meta && (
+                      <p class="meta" style="color: var(--muted);">
+                        {meta}
+                      </p>
+                    )}
+                    {copyParagraphs.map((paragraph, index) => (
+                      <>
+                        <p class:list={['work-panel-paragraph', {
+                          'work-panel-paragraph--first': index === 0,
+                          'work-panel-paragraph--credits': paragraph.startsWith('Credits:')
+                        }]}>
+                          {paragraph}
+                        </p>
+                        {inlineImage && index === inlineImage.insertAfterParagraph && (
+                          <figure class="work-panel-inline-image">
+                            <img
+                              src={inlineImage.src}
+                              width="1800"
+                              height="1013"
+                              alt={inlineImage.alt}
+                              class="work-panel-inline-image-element"
+                            />
+                          </figure>
+                        )}
+                      </>
+                    ))}
+                    {secondaryExternalVideo && (
+                      <div class="work-panel-inline-video">
+                        <YouTube
+                          id={secondaryExternalVideo.id}
+                          title={secondaryExternalVideo.title ?? `${work.data.title} additional documentation`}
+                          aspect={secondaryExternalVideo.aspect}
+                        />
+                      </div>
+                    )}
+                    {postSecondaryExternalVideoParagraph && (
+                      <p class="work-panel-paragraph work-panel-paragraph--after-inline-video">
+                        {postSecondaryExternalVideoParagraph}
+                      </p>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+
+      <aside class="works-sidebar-stack">
+        <section class="card works-list-panel">
+          <h2 class="meta works-list-heading">Video</h2>
+          <ul class="works-list" role="list">
+            {listedWorks.map(({ work }) => (
+              <li>
+                <a
+                  class:list={['work-link', { 'is-active': work.slug === defaultWork.slug }]}
+                  href={`/works?w=${work.slug}`}
+                  data-work-link
+                  data-slug={work.slug}
+                >
+                  <span>{getDisplayTitle(work.slug, work.data.title)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <div class="works-lower">
+      <section class="card works-section works-section--full works-section--design">
+        <div class="prose-ove design-section-intro">
+          <h2 class="text-2xl mb-3">Design</h2>
+          <p class="max-w-4xl">I design and build experiential systems that combine audiovisual and physical interactions, with an emphasis on participatory experiences for audiences in cultural and applied contexts. I typically support projects from concept development through production.</p>
+          <p class="max-w-4xl design-section-intro__followup">Case studies include concept design and branding for Telharmonium Labs and Holonic Systems, sonic interaction design, prototype design and event design for Beddit, as well as design of infographics and institutional cartography for the University of Tampere and the Academy of Finland.</p>
+        </div>
+
+        <div class="design-case-grid">
+          <article class="design-case-card design-case-card--with-image">
+            <figure class="design-case-media design-case-media--logo">
+              <img
+                src="/design/telharmonic-logo.jpg"
+                width="1440"
+                height="1080"
+                alt="Telharmonium Labs logo"
+                class="design-case-image"
+              />
+            </figure>
+            <div class="prose-ove">
+              <h3 class="text-xl mb-2">Telharmonium Labs, Inc.</h3>
+              <p>
+                Telharmonium Labs develops input- and output-agnostic music systems that compose in real time from structural and perceptual models. The system delivers deterministic, expressive, and explainable scores in any definable musical form while offering a controlled and auditable alternative to black-box generation of generic audio.
+                <br /><br />
+                The Telharmonium Composer is a rule-driven music engine built on symbolic representations of musical structure. It adapts to context and personal profiles, supports both linear and interactive composition and operates without need for custom model training.
+                <br /><br />
+                The Telharmonium musical world model defines music as enacted temporal narrative and an emergent system state.
+              </p>
+              <p class="design-case-link-row"><a href="https://www.telharmonium.ca" class="design-case-link">www.telharmonium.ca</a></p>
+            </div>
+          </article>
+
+          <article class="design-case-card design-case-card--holonic">
+            <div class="design-case-header design-case-header--with-logo">
+              <div class="prose-ove">
+                <h3 class="text-xl mb-2">Holonic Systems</h3>
+                <p>Holonic Systems develops adaptive music systems for sonic placemaking, social musical communication, and responsive public and performance contexts. Through biosensors, physical computing, geospatial data, and mobile systems, this work explored how music could become contextually relevant, biologically and perceptually grounded, and situated in everyday life. It formed the basis for projects involving movement, biosignals, synthesis, lighting, and participatory scoring.</p>
+              </div>
+              <figure class="design-case-side-figure">
+                <img
+                  src="/design/holonic-logo.png"
+                  width="1452"
+                  height="846"
+                  alt="Holonic Systems logo"
+                  class="design-case-side-image"
+                />
+              </figure>
+            </div>
+            <div class="design-case-media-sequence">
+              <figure class="design-case-media design-case-media--holonic-principles design-case-media--panel">
+                <img
+                  src="/design/holonic-operating-principles.png"
+                  width="1452"
+                  height="846"
+                  alt="Holonic Systems operating principles diagram"
+                  class="design-case-image"
+                />
+              </figure>
+            </div>
+            <section class="design-case-segment">
+              <div class="prose-ove">
+                <h4 class="text-lg mb-2">Holon</h4>
+                <p>Holon is a zero-UI consumer demo of Holonic Systems’ platform for B2B clients. It showcases the Holonic backend for musical ubiquitous computing. Holon supports embedded audio engines, including Pure Data and miRack (iOS port of VCV Rack, exclusively licensed from mifki).</p>
+                <p class="design-case-paragraph-gap">The Holon project not only challenges the visual bias in technology and urban design but also foregrounds the often under-appreciated role of sound and music in shaping human experience. Holon contributes to a broader discourse on sensory equity and on the importance of designing spaces and technologies that honour our evolutionary heritage and the full spectrum of human perception. Holon was nominated for the Music Cities 2025 Awards and the ArtTech Forum 2023 Prize.</p>
+              </div>
+              <figure class="design-case-media">
+                <img
+                  src="/design/holon-products.png"
+                  width="2008"
+                  height="1022"
+                  alt="Holon product visuals"
+                  class="design-case-image"
+                />
+              </figure>
+              <div class="design-case-video-pair">
+                  <div class="design-case-video">
+                    <YouTube
+                      id="AUBEsPSuHws"
+                      title="Multimodal Commuting (public artwork proposal, 2023)"
+                      aspect="16:9"
+                    />
+                  <p class="design-case-video-caption">Multimodal Commuting (public artwork proposal, 2023)</p>
+                </div>
+                <div class="design-case-video">
+                  <YouTube id="XPGUVc10iaI" title="Holon - Music from Movement" aspect="16:9" />
+                  <p class="design-case-video-caption">Holon - Music from Movement</p>
+                </div>
+              </div>
+            </section>
+            <section class="design-case-segment design-case-segment--holonist">
+              <div class="design-case-header--holonist">
+                <div class="prose-ove design-case-copy--holonist">
+                  <h4 class="text-lg mb-2">Holon.ist</h4>
+                  <p>Holon.ist is the companion app to Holon and an open-world interactive music platform for emergent, mobile, and data-driven sonic experiences. It features sensor data mapping to OSC and MIDI messages, including from wearables like Apple Watch and Airpods, Movesense smart sensors and more.</p>
+                  <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">The Holonic workflow reads incoming OSC, communicates with external users, devices, or services through our JavaScript sandbox, which processes and translates this data into OSM or MIDI. Holonic Systems' deep integration with standard tools, protocols and formats reveals possibilities of interactions that go beyond sonification and sound design to composition and sociomusicology and biomusicology.</p>
+                  <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">Since its launch in 2019, Holon.ist has been used successfully by hundreds, if not thousands, of professional artists around the world in productions ranging from personal experiments to large-scale productions that are highly musical, theatrical, choreographic, and therapeutic. The Holon.ist mobile app, and its related plugins and services, have been central to collaborations with artists, enthusiasts and corporate clients and partners like Finnish sports technology manufacturer Suunto/Movesense and Native Instruments, Holonic Systems participation in the Bose AR beta for developers, and the partnership with mifki, the developers of miRack.</p>
+                  <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">The latest Holonic component is a cloud-based, OSC-controlled, tempo-synced multisampler with pitch shifting and time stretching, for AWS-based dynamic sample playback. Kaiseki was developed by Voxglitch and Holonic Systems to support Telharmonium Labs' mission to enable evolutionary development of any musical form. With Kaiseki, samples can be selected and loaded from inputs like location data, movement data, and biometric data. The Holon.ist preset can be shared to the Holon app with the corresponding miRack patch as a very small file.</p>
+                </div>
+                <figure class="design-case-media design-case-media--kaiseki design-case-media--panel">
+                  <img
+                    src="/design/kaiseki.jpeg"
+                    width="1536"
+                    height="2048"
+                    alt="Kaiseki multisampler interface and workflow image"
+                    class="design-case-image design-case-image--kaiseki"
+                  />
+                </figure>
+              </div>
+              <div class="design-case-media-pair">
+                <div class="design-case-video">
+                  <YouTube
+                    id="0OfQKiKl2Mc"
+                    title="Dance performance by Anna Serra at Hangar.org (Barcelona, 2019)"
+                    aspect="16:9"
+                  />
+                  <p class="design-case-video-caption">Dance performance by Anna Serra at Hangar.org (Barcelona, 2019)</p>
+                </div>
+                <figure class="design-case-media design-case-media--holonist-integrations">
+                  <img
+                    src="/design/holonist-integrations.jpg"
+                    width="1080"
+                    height="567"
+                    alt="Holon.ist integrations and interface image"
+                    class="design-case-image"
+                  />
+                  <figcaption class="design-case-figure-caption design-case-figure-caption--align-right">Holon.ist integrations</figcaption>
+                </figure>
+              </div>
+              <figure class="design-case-media design-case-media--below">
+                <img
+                  src="/design/holonist-screens.png"
+                  width="1536"
+                  height="1024"
+                  alt="Holon.ist screen set and interaction views"
+                  class="design-case-image"
+                />
+              </figure>
+            </section>
+          </article>
+
+          <article class="design-case-card design-case-card--jean-monnet">
+            <div class="prose-ove">
+              <h3 class="text-xl mb-2">EL-TRAN</h3>
+              <h4 class="text-lg mb-2 design-case-subtitle">Academy of Finland/University of Tampere, Jean Monnet Centre for Excellence.</h4>
+              <p>This project combined design, research, and visual communication through cartographic and geopolitical material developed for institutional use. It included roundtable documentation, video interviews, and editorially structured visual material. It sits within an earlier body of work in which mapping, information structure, and editorial clarity were central design concerns.</p>
+            </div>
+            <figure class="design-case-media design-case-media--below design-case-media--flush">
+              <div class="design-case-media-triptych">
+                <img
+                  src="/design/jeanmonnet-uta-1.jpg"
+                  width="1030"
+                  height="1030"
+                  alt="University of Tampere Jean Monnet Centre for Excellence panel one"
+                  class="design-case-image"
+                />
+                <img
+                  src="/design/jeanmonnet-uta-2.jpg"
+                  width="1030"
+                  height="1030"
+                  alt="University of Tampere Jean Monnet Centre for Excellence panel two"
+                  class="design-case-image"
+                />
+                <img
+                  src="/design/jeanmonnet-uta-3.jpg"
+                  width="1030"
+                  height="1030"
+                  alt="University of Tampere Jean Monnet Centre for Excellence panel three"
+                  class="design-case-image"
+                />
+              </div>
+            </figure>
+          </article>
+
+          {bedditWork && (
+            <article class="design-case-card design-case-card--beddit">
+              <div class="design-case-header design-case-header--beddit">
+                <div class="prose-ove">
+                  <h3 class="text-xl mb-2">
+                    <a href="/works/beddit" class="design-case-link">Beddit: Sleep sonification and musical alarms</a>
+                  </h3>
+                  {bedditLeadIntro && <p>{bedditLeadIntro}</p>}
+                  {bedditLeadFollowUp && <p class="design-case-beddit-follow-up">{bedditLeadFollowUp}</p>}
+                </div>
+                <figure class="design-case-media design-case-media--beddit-device">
+                  <img
+                    src="/works/beddit/beddit-device.png"
+                    width="944"
+                    height="580"
+                    alt="Beddit device documentation image"
+                    class="design-case-image design-case-image--contain"
+                  />
+                </figure>
+              </div>
+              <div class="design-case-beddit-media">
+                <figure class="design-case-media design-case-media--beddit-portrait">
+                  <img
+                    src="/works/beddit/beddit-ove.jpg"
+                    width="768"
+                    height="776"
+                    alt="Ove Holmqvist during Beddit-related work"
+                    class="design-case-image design-case-image--beddit-photo"
+                  />
+                </figure>
+                <figure class="design-case-media design-case-media--beddit-hero">
+                  <img
+                    src="/works/beddit/beddit-slush.jpg"
+                    width="1729"
+                    height="1601"
+                    alt="Beddit interactive booth presented at Slush 2015"
+                    class="design-case-image design-case-image--beddit-photo"
+                  />
+                </figure>
+              </div>
+              {bedditTailParagraphs.length > 0 && (
+                <div class="prose-ove design-case-copy--beddit-tail">
+                  {bedditTailParagraphs.map((paragraph) => (
+                    <p>{paragraph}</p>
+                  ))}
+                </div>
+              )}
+            </article>
+          )}
+        </div>
+      </section>
+
+      <section id="research-development-education" class="research-section card works-section works-section--full">
+        <div id="research-education" aria-hidden="true"></div>
+        <div class="prose-ove research-section-intro">
+          <h2 class="text-2xl mb-3">Research, Development and Education</h2>
+          <p class="max-w-4xl">Scientific research and artistic studies remain foundational in my work. I approach problems from a systemic and evolutionary perspective, and this has informed consulting, technical development, workshops, and collaborative research for startups, academic institutions, established hardware and software vendors, event organisers, and experiential agencies.</p>
+        </div>
+
+        <div class="research-support-grid research-support-grid--intro">
+          <figure class="research-support-card">
+            <div class="research-support-media">
+              <img
+                src="/about/img-4412.jpg"
+                width="4032"
+                height="3024"
+                alt="Participants gathered outdoors during a New Works XR activity"
+                loading="lazy"
+                decoding="async"
+                class="research-support-image research-support-image--new-works"
+              />
+            </div>
+            <figcaption>New Works XR, Vancouver</figcaption>
+          </figure>
+          <figure class="research-support-card">
+            <div class="research-support-media">
+              <img
+                src="/research/musical-instrument-museum.jpg"
+                width="2025"
+                height="1350"
+                alt="Workshop participants testing instruments in a museum setting"
+                loading="lazy"
+                decoding="async"
+                class="research-support-image research-support-image--mim"
+              />
+            </div>
+            <figcaption>Musical Instruments Museum, Brussels</figcaption>
+          </figure>
+        </div>
+
+        <div class="research-entry-grid">
+          <article class="research-entry research-entry--media">
+            <div class="prose-ove">
+              <h3 class="text-xl mb-2">QMUL / Centre for Digital Music</h3>
+              <p>Holonic Systems is an industrial partner to Queen Mary University London's Centre For Digital Music, and I have in this capacity participated in C4D's AI+Music doctoral program as a mentor.</p>
+              <p class="research-entry-paragraph-gap">Since 2019, I have tutored PhD and Masters students in researching and developing Ubiquitous Music experiences, which are often centred around functional music, a concept we spearheaded and helped commercialise.</p>
+            </div>
+            <figure class="research-entry-figure">
+              <img
+                src="/research/qmul-C4D-lab.jpg"
+                width="4032"
+                height="3024"
+                alt="Queen Mary University of London Centre for Digital Music lab"
+                class="research-entry-image"
+              />
+            </figure>
+          </article>
+
+          <article class="research-entry research-entry--media">
+            <div class="prose-ove">
+              <h3 class="text-xl mb-2">Field Kitchen Academy - Physical Computing &amp; Music Workshop</h3>
+              <p>The theme of Field Kitchen Academy 2020 was Curious Loops, in this case consisting of closed feedback loops, both functional feedback and biofeedback.</p>
+              <p class="research-entry-paragraph-gap">Participants in my workshop used Holon.ist apps and Suunto Movesense wearables connected to Ableton Live to control effects on the contact-miked instruments that they had sourced from discarded farming equipment. One performer used a Movesense with a chest strap to clock the performance from her heart rate. The sound representing her pulse was activated by her posture.</p>
+              <p class="research-entry-artist-list"><em>Artists in video: Guy Fixsen, Carina Pesch, Martin Reck, Konstantin Guz, Jun Zhang, Emilie Wright.</em></p>
+            </div>
+            <div class="research-entry-video">
+              <YouTube id="kZSuq1o-HEs" title="Field Kitchen Academy - Physical Computing & Music Workshop" aspect="16:9" />
+            </div>
+          </article>
+        </div>
+
+        <div class="research-support-grid">
+          <figure class="research-support-card">
+            <div class="research-support-media">
+              <img
+                src="/research/oak-house-school.jpg"
+                width="1334"
+                height="750"
+                alt="Students taking part in a workshop session"
+                loading="lazy"
+                decoding="async"
+                class="research-support-image"
+              />
+            </div>
+            <figcaption>Oak House School, Barcelona</figcaption>
+          </figure>
+          <figure class="research-support-card">
+            <div class="research-support-media">
+              <img
+                src="/research/workshop-paris-place-republique.jpg"
+                width="3480"
+                height="1957"
+                alt="Workshop participants gathered in a public square"
+                loading="lazy"
+                decoding="async"
+                class="research-support-image research-support-image--replay"
+              />
+            </div>
+            <figcaption>Replay workshop, Place de la Republique, Paris</figcaption>
+          </figure>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <a slot="footer-extra" href="/" class="works-home-mark" aria-label="Return to splash page">
+    <img src="/images/ove-logo-exact.png" alt="Ove geometric logo" class="works-home-mark__image" />
+  </a>
+</BaseLayout>
+
+<script is:inline define:vars={{ defaultSlug }}>
+  const panels = Array.from(document.querySelectorAll('[data-work-panel]'));
+  const links = Array.from(document.querySelectorAll('[data-work-link]'));
+  const validSlugs = new Set(panels.map((panel) => panel.dataset.slug).filter(Boolean));
+
+  const resolveSlug = () => {
+    const url = new URL(window.location.href);
+    const requested = url.searchParams.get('w');
+
+    if (requested && validSlugs.has(requested)) {
+      return requested;
+    }
+
+    if (validSlugs.has(defaultSlug)) {
+      if (requested) {
+        url.searchParams.set('w', defaultSlug);
+        window.history.replaceState({}, '', `${url.pathname}?${url.searchParams.toString()}`);
+      }
+
+      return defaultSlug;
+    }
+
+    return panels[0]?.dataset.slug ?? '';
+  };
+
+  const syncSelection = () => {
+    const selectedSlug = resolveSlug();
+
+    panels.forEach((panel) => {
+      const isActive = panel.dataset.slug === selectedSlug;
+      panel.hidden = !isActive;
+      panel.classList.toggle('is-active', isActive);
+    });
+
+    links.forEach((link) => {
+      const isActive = link.dataset.slug === selectedSlug;
+      link.classList.toggle('is-active', isActive);
+
+      if (isActive) {
+        link.setAttribute('aria-current', 'true');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  };
+
+  links.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const href = link.getAttribute('href');
+
+      if (!href) {
+        return;
+      }
+
+      event.preventDefault();
+      window.history.pushState({}, '', href);
+      syncSelection();
+    });
+  });
+
+  window.addEventListener('popstate', syncSelection);
+  syncSelection();
+</script>
+
+<style>
+  :global(main.container) {
+    padding-bottom: 0;
+  }
+
+  :global(.site-footer) {
+    padding-top: 2.25rem;
+  }
+
+  .works-page {
+    --works-gap: 2.35rem;
+    width: 100%;
+    max-width: 72rem;
+    margin: 0 auto;
+    display: grid;
+    gap: var(--works-gap);
+    padding: 2.5rem 2.9rem 2.9rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .works-shell {
+    display: grid;
+    gap: var(--works-gap);
+    grid-template-columns: minmax(0, 1fr) 18.75rem;
+    align-items: start;
+  }
+
+  .works-lower {
+    display: grid;
+    gap: 3.35rem;
+  }
+
+  .works-main {
+    display: grid;
+    gap: 0;
+    min-width: 0;
+  }
+
+  .works-section {
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .works-section--design,
+  .research-section {
+    border-top: 1px solid rgba(77, 111, 115, 0.14);
+    padding-top: 3rem;
+  }
+
+  .works-section-heading {
+    margin-bottom: 1.6rem;
+  }
+
+  .works-section-heading--selected {
+    margin-bottom: 0;
+  }
+
+  .works-section-heading h2,
+  .works-section--design h2,
+  .research-section h2 {
+    margin: 0;
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .works-viewer {
+    min-width: 0;
+  }
+
+  .work-panel {
+    min-width: 0;
+  }
+
+  .work-panel-copy {
+    min-width: 0;
+    max-width: 49rem;
+  }
+
+  .work-panel-paragraph {
+    margin-top: 1.1rem;
+  }
+
+  .work-panel-paragraph--credits {
+    font-style: italic;
+  }
+
+  .work-panel-inline-video {
+    margin-top: 1.55rem;
+  }
+
+  .work-panel-paragraph--after-inline-video {
+    margin-top: 1.15rem;
+  }
+
+  .work-panel-inline-image {
+    margin: 1.6rem 0 0;
+  }
+
+  .work-panel-inline-image-element {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+
+  .work-panel-paragraph--first {
+    margin-top: 1.15rem;
+  }
+
+  .viewer-frame {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.68);
+  }
+
+  .placeholder-panel {
+    aspect-ratio: 16 / 9;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    background: rgba(245, 240, 230, 0.72);
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }
+
+  .viewer-frame-image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .works-list-panel {
+    position: sticky;
+    top: 1.5rem;
+    background: rgba(245, 240, 230, 0.38);
+    border: 1px solid rgba(77, 111, 115, 0.14);
+    border-radius: 12px;
+    box-shadow: none;
+    padding: 1.25rem 1.3rem 1.35rem;
+  }
+
+  .works-sidebar-stack {
+    display: block;
+    align-self: start;
+    position: relative;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .works-sidebar-stack::after {
+    display: none;
+  }
+
+  .research-section {
+    margin-top: 0;
+  }
+
+  .research-section-intro {
+    max-width: 54rem;
+    margin-bottom: 2.2rem;
+  }
+
+  .research-section-intro h2 {
+    margin-bottom: 1.2rem;
+  }
+
+  .works-home-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0 0;
+  }
+
+  .works-home-mark__image {
+    display: block;
+    width: min(7rem, 100%);
+    height: auto;
+  }
+
+  .works-list-heading {
+    margin-bottom: 0.9rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.72rem;
+  }
+
+  .works-list {
+    display: grid;
+    gap: 0.45rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .work-link {
+    display: block;
+    padding: 0.3rem 0;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .work-link:hover,
+  .work-link:focus-visible,
+  .work-link.is-active {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+  }
+
+  .work-link-meta {
+    display: block;
+    margin-top: 0.1rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  .design-case-card {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .design-case-grid {
+    display: grid;
+    gap: 2.45rem;
+    margin-top: 1.8rem;
+  }
+
+  .design-section-intro {
+    max-width: 54rem;
+    margin-bottom: 2.2rem;
+  }
+
+  .design-section-intro h2 {
+    margin-bottom: 1.2rem;
+  }
+
+  .design-section-intro__followup {
+    margin-top: 1rem;
+  }
+
+  .design-case-card + .design-case-card {
+    border-top: 1px solid rgba(77, 111, 115, 0.12);
+    padding-top: 2.45rem;
+  }
+
+  .design-case-card--with-image {
+    display: grid;
+    gap: 1.85rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .design-case-card--holonic {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .design-case-card--beddit {
+    display: grid;
+    gap: 1.9rem;
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .design-case-header--with-logo {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 1.2fr) minmax(8rem, 10rem);
+    align-items: start;
+  }
+
+  .design-case-header--beddit {
+    display: grid;
+    gap: 1.9rem;
+    grid-template-columns: minmax(0, 1.18fr) minmax(15rem, 18rem);
+    align-items: start;
+  }
+
+  .design-case-side-figure {
+    margin: 0;
+    align-self: start;
+    justify-self: end;
+    padding-top: 0.85rem;
+  }
+
+  .design-case-card--holonic .design-case-side-figure {
+    align-self: center;
+    padding-top: 0.35rem;
+    padding-right: 0.9rem;
+  }
+
+  .design-case-side-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+
+  .design-case-media {
+    margin: 0;
+  }
+
+  .design-case-media--panel {
+    padding: 1rem;
+    background: rgba(245, 240, 230, 0.34);
+    border: 1px solid rgba(77, 111, 115, 0.12);
+    border-radius: 12px;
+  }
+
+  .design-case-media-stack {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+
+  .design-case-media-sequence {
+    display: grid;
+    gap: 1.8rem;
+  }
+
+  .design-case-card--holonic > .design-case-media-sequence {
+    margin-top: 1.05rem;
+  }
+
+  .design-case-media--holonic-principles {
+    width: min(100%, 48rem);
+    margin-inline: auto;
+  }
+
+  .design-case-media-pair {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .design-case-segment--holonist .design-case-media-pair {
+    align-items: stretch;
+  }
+
+  .design-case-segment--holonist .design-case-media-pair > .design-case-video,
+  .design-case-segment--holonist .design-case-media-pair > .design-case-media {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .design-case-segment--holonist .design-case-media-pair > .design-case-video .design-case-video-caption,
+  .design-case-segment--holonist .design-case-media-pair > .design-case-media .design-case-figure-caption {
+    margin-top: auto;
+    padding-top: 0.7rem;
+  }
+
+  .design-case-segment {
+    display: grid;
+    gap: 1.8rem;
+    margin-top: 1.05rem;
+  }
+
+  .design-case-segment--holonist {
+    gap: 2.35rem;
+    margin-top: 1.4rem;
+    padding-top: 1.15rem;
+  }
+
+  .design-case-header--holonist {
+    display: grid;
+    gap: 1.8rem;
+    grid-template-columns: minmax(0, 1.12fr) minmax(16rem, 21rem);
+    align-items: start;
+  }
+
+  .design-case-copy--holonist {
+    max-width: 40rem;
+  }
+
+  .design-case-copy--holonist .design-case-paragraph-gap--holonist {
+    margin-top: 1.55rem;
+  }
+
+  .design-case-media--kaiseki {
+    width: min(100%, 20.5rem);
+    padding: 0.75rem;
+    align-self: center;
+    justify-self: end;
+  }
+
+  .design-case-media--beddit-hero {
+    width: 100%;
+  }
+
+  .design-case-media--beddit-device {
+    width: 100%;
+    margin-top: 0.2rem;
+    padding: 1rem;
+    background: rgba(245, 240, 230, 0.28);
+    border: 1px solid rgba(77, 111, 115, 0.1);
+    border-radius: 12px;
+  }
+
+  .design-case-beddit-media {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .design-case-beddit-media .design-case-media {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
+  .design-case-copy--beddit-tail {
+    max-width: none;
+  }
+
+  .design-case-beddit-follow-up {
+    margin-top: 1.1rem;
+  }
+
+  .design-case-segment--with-media {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: start;
+  }
+
+  .design-case-video-pair {
+    display: grid;
+    gap: 1.7rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .design-case-video {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .design-case-paragraph-gap {
+    margin-top: 1.5rem;
+  }
+
+  .design-case-segment h4 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  .design-case-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .design-case-image--contain {
+    object-fit: contain;
+  }
+
+  .design-case-image--beddit-photo {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+
+  .design-case-image--kaiseki {
+    width: auto;
+    max-width: 100%;
+    max-height: 28.5rem;
+    margin-inline: auto;
+    object-fit: contain;
+  }
+
+  .design-case-video-caption {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .design-case-figure-caption {
+    margin-top: 0.7rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .design-case-figure-caption--align-right {
+    text-align: right;
+  }
+
+  .design-case-media--below {
+    margin-top: 1.8rem;
+  }
+
+  .design-case-media--flush {
+    width: 100%;
+  }
+
+  .design-case-card--jean-monnet .design-case-media-triptych {
+    gap: 1.1rem;
+  }
+
+  .design-case-media-triptych {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .design-case-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .design-case-link:hover,
+  .design-case-link:focus-visible {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1px;
+  }
+
+  .design-case-link-row {
+    margin-top: 2.2rem;
+    padding-top: 0.6rem;
+  }
+
+  .design-case-subtitle {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: 400;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+
+  .design-case-meta {
+    margin-top: 0.75rem;
+    color: var(--muted);
+  }
+
+  .design-case-copy :global(p + p) {
+    margin-top: 1.25rem;
+  }
+
+  .research-entry-grid {
+    display: grid;
+    gap: 1.8rem;
+    margin-top: 1.8rem;
+  }
+
+  .research-entry {
+    display: grid;
+    gap: 1.45rem;
+    background: rgba(245, 240, 230, 0.34);
+    border: 1px solid rgba(77, 111, 115, 0.12);
+    border-radius: 12px;
+    padding: 1.6rem;
+  }
+
+  .research-entry--media {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+    align-items: start;
+  }
+
+  .research-entry-artist-list {
+    margin-top: 1rem;
+  }
+
+  .research-entry-paragraph-gap {
+    margin-top: 1.55rem;
+  }
+
+  .research-entry-figure {
+    margin: 0;
+  }
+
+  .research-entry-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .research-entry-video {
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
+  .research-support-grid {
+    display: grid;
+    gap: 1.45rem;
+    margin-top: 1.8rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .research-support-grid--intro {
+    margin-top: 1.45rem;
+  }
+
+  .research-support-card {
+    margin: 0;
+    padding: 0;
+    background: rgba(245, 240, 230, 0.34);
+    border: 1px solid rgba(77, 111, 115, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .research-support-media {
+    overflow: hidden;
+  }
+
+  .research-support-card figcaption {
+    margin: 0;
+    padding: 0.72rem 0.95rem 0.88rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    min-height: 3.25rem;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .research-support-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 0;
+  }
+
+  .research-support-image--new-works {
+    object-position: center 66%;
+  }
+
+  .research-support-image--mim {
+    object-position: center 76%;
+  }
+
+  .research-support-image--replay {
+    transform: scale(1.08);
+    transform-origin: center bottom;
+  }
+
+  @media (max-width: 860px) {
+    .works-page {
+      padding: 2rem 1.7rem 2.35rem;
+    }
+
+    .works-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .design-case-card--with-image,
+    .design-case-card--beddit,
+    .research-entry--media,
+    .design-case-media-pair,
+    .design-case-video-pair,
+    .design-case-segment--with-media,
+    .design-case-header--holonist,
+    .design-case-header--with-logo,
+    .design-case-header--beddit {
+      grid-template-columns: 1fr;
+    }
+
+    .design-case-beddit-media {
+      grid-template-columns: 1fr;
+    }
+
+    .design-case-media--beddit-device {
+      width: min(100%, 30rem);
+      margin-inline: auto;
+    }
+
+    .design-case-media-triptych,
+    .research-support-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .works-main,
+    .works-sidebar-stack,
+    .works-list-panel {
+      position: static;
+    }
+
+    .works-section--design,
+    .research-section {
+      padding-top: 2.35rem;
+    }
+  }
+</style>

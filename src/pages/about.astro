@@ -1,27 +1,533 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-const bios = await getCollection('bio');
-const sorted = bios.sort((a, b) => (a.data.date < b.data.date ? 1 : -1));
-const rendered = await Promise.all(sorted.map(async (b) => {
-  const { Content, data } = await b.render();
-  return { Content, data };
-}));
 ---
-<BaseLayout title="About — ove.fi">
-  <h1 class="text-2xl mb-6">About</h1>
-  <details class="mb-8" open>
-    <summary class="cursor-pointer select-none">Bio</summary>
-    <div class="mt-4 space-y-8">
-      {rendered.map(({ Content, data }) => (
-        <section>
-          <h2 class="text-xl">{data.title}</h2>
-          <time class="text-sm text-neutral-500">{data.date}</time>
-          <div class="prose max-w-none mt-2"><Content /></div>
-        </section>
-      ))}
-    </div>
-  </details>
+<BaseLayout title="About Ove — ove.fi" description="About Ove Holmqvist" hideFooter={true}>
+  <article class="about-page prose-ove">
+    <section class="about-panel about-panel--bio">
+      <header class="about-section-header about-section-header--bio">
+        <span class="about-section-kicker">Biography</span>
+        <h1 class="about-bio-name">Ove Holmqvist</h1>
+      </header>
 
-  <p>For the full list of works, see <a href="/works">Works</a>.</p>
+      <div class="about-bio-hero">
+        <div class="about-bio-copy-stack">
+          <div class="about-bio-hero__copy">
+            <p>A Finnish-Canadian artist, designer, interactive music composer, and producer, Ove Holmqvist is based in K'emk'emeláy (Vancouver, B.C.) and Monza, Italy. His primary practice currently revolves around sound art, computational choreomusicology, and augmented musicianship and composition.</p>
+          </div>
+
+          <div class="about-bio-body">
+            <p>Working across experiential design, music technology, sound design, and visual communication, he develops context-aware audio systems in which biosignals, movement, behaviour, and situational context influence authored musical structure.</p>
+            <p>His musical research and practice take an evolutionary, bio-informed approach to generating perceptual, semantic, and narrative musical features, and understanding listener responses and needs. This enables the creation of experiences that resonate on affective, physiological, cognitive, and social levels.</p>
+          </div>
+        </div>
+
+        <figure class="about-bio-side-figure">
+          <img
+            src="/about/ove-table.jpg"
+            width="768"
+            height="768"
+            alt="Portrait of Ove Holmqvist seated at a table"
+            class="about-bio-side-image"
+          />
+        </figure>
+      </div>
+
+      <div class="about-bio-image-row" aria-label="Additional portraits and documentation of Ove Holmqvist">
+        <figure class="about-bio-image-figure">
+          <img
+            src="/about/ove-patching.jpg"
+            width="3433"
+            height="4491"
+            alt="Ove Holmqvist patching cables during a performance setup"
+            class="about-bio-image about-bio-image--patching"
+          />
+        </figure>
+        <figure class="about-bio-image-figure">
+          <img
+            src="/about/ove-sleeper.jpg"
+            width="1925"
+            height="1080"
+            alt="Ove Holmqvist in a public performance setting"
+            class="about-bio-image about-bio-image--sleeper"
+          />
+        </figure>
+        <figure class="about-bio-image-figure">
+          <img
+            src="/about/ove-vtt.png"
+            width="2828"
+            height="2828"
+            alt="Ove Holmqvist in workshop and performance context"
+            class="about-bio-image"
+          />
+        </figure>
+      </div>
+
+      <div class="about-bio-note">
+        <p>Ove Holmqvist’s early work ranges from photography, audiovisual production, journalism, and graphic design to sound art and music. His first sonic art works included a concrète piece for a radiophonic art festival (Wings of Sound, 1992) and sound design for Dead in the Water by Harald Mueller, performed by The Sirius Theatre. He later combined loops, digital effects, and live musicians when warming up for Pansonic at the 1993 Cyber Edge rave. In 1996, he was instrumental in the introduction of drum and bass to Finland when he brought Moving Shadow’s Aquasky to perform at the municipal art event Club Lux in Finland, for which he held A&amp;R responsibilities. The event marked the first public performance with Mark Hakonen-Meddings (Sensien), later a partner in Holonic Systems.</p>
+      </div>
+    </section>
+
+    <section class="about-panel about-panel--statement">
+      <header class="about-section-header about-section-header--center">
+        <span class="about-section-kicker">Inquiry &amp; Framework</span>
+        <h2 class="about-section-heading">Artist's Statement</h2>
+      </header>
+
+      <figure class="about-wide-figure">
+        <img
+          src="/works/chimerik-improvised-performance-unity-consciousness-festival/still-duet-wide.jpg"
+          width="2048"
+          height="1366"
+          alt="Chimerik performance still with Ove Holmqvist and Liliana Salazar in duet"
+          class="about-wide-image"
+        />
+        <figcaption class="about-figure-caption">Unity Consciousness Festival</figcaption>
+      </figure>
+
+      <div class="about-statement-columns">
+        <div class="about-statement-column">
+          <p>Music is a way of shaping the subjective experience of time. It is also a form of cognitive stimulation, a medium for psychophysiological self-regulation, and a social practice tied to identity, cohesion, and ritual participation. I am interested in what happens when those functions are no longer treated as secondary, and when music is designed to respond to human state, behaviour, and context rather than being consumed as fixed background. In that sense, my work is concerned with musical agency as much as with musical output.</p>
+          <p>My work treats music as a designed system rather than a finished object. I build participatory processes in which biosignals, movement, behaviour, and situational context create self-regulating feedback loops and diffuse concepts of input and output, perceiver and performer. My artistic research investigates how expectations and musical preference are shaped by environment, social dynamics, and physiology, and how those relationships can be modelled without turning composition into a black box.</p>
+          <p>I use affective computing, physical computing, and ambient computing to apply methods and principles derived from systematic musicology, evolutionary musicology, ethnomusicology, biomusicology, sociomusicology, urban musicology and choreomusicology.</p>
+        </div>
+
+        <div class="about-statement-column">
+          <p>Techniques used in this way include IR audience tracking, ballistographic biosensing, interactive projections, and custom analytics, sonification and photic stimulation systems for EEG biofeedback.</p>
+          <p>In my artistic practice, I try to diffuse the separation between audiences and performers by giving participants musical agency. My works aim to engage the communal aspects of music making and listening, as I consider the social features of music - promotion of cooperation and social cohesion, relief from anxiety, establishment and maintenance of social identity - underserved in our current culture.</p>
+          <p>We can, today, with assistive technologies I have developed, attempt to return to a more distant condition in which dance and music were not separated by concertization. By integrating theoretical frameworks such as human geography, Situationism, 4E cognition, and systems theory, we can create artworks that are not merely representations of space but metabolic systems evolving through interactions between participants and their environment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-panel about-panel--activities">
+      <header class="about-section-header">
+        <span class="about-section-kicker">Engagement &amp; Partnerships</span>
+        <h2 class="about-section-heading">Activities</h2>
+      </header>
+
+      <div class="about-activities-copy about-activities-copy--intro">
+        <p>At Telharmonium Labs, I am currently developing rule-driven music systems for responsive scores, interactive experiences, and participatory environments. The composition software is not trained on existing material but on music theory and musical rules, offering an alternative to extractive solutions and a process for auditable music generation that respects cultural values without surface-level appropriations.</p>
+        <p>Earlier work developed through Holonic Systems explored sonic placemaking, social musical communication, auditory augmented reality, and adaptive music for communal and public settings. Through biosensors, geospatial computing, and physical interaction, these projects investigated how music could be made contextually relevant, biologically and perceptually grounded, and situated in everyday life.</p>
+      </div>
+
+      <div class="about-image-row about-image-row--portrait-pair" aria-label="Selected activities images">
+        <figure class="about-activity-figure">
+          <img
+            src="/about/img-5783.jpg"
+            width="576"
+            height="768"
+            alt="Ove Holmqvist walking during Helsinki Design Week context"
+            class="about-activity-image about-activity-image--portrait about-activity-image--helsinki"
+          />
+          <figcaption class="about-figure-caption">WITH ANNA MYLLYMÄKI, HELSINKI DESIGN WEEK</figcaption>
+        </figure>
+        <figure class="about-activity-figure">
+          <img
+            src="/about/design-museum.jpg"
+            width="4000"
+            height="3000"
+            alt="Performance and installation view at Design Museum Helsinki"
+            class="about-activity-image about-activity-image--portrait"
+          />
+          <figcaption class="about-figure-caption">Design Museum Helsinki</figcaption>
+        </figure>
+      </div>
+
+      <div class="about-activities-copy about-activities-copy--body">
+        <p>I’ve had the privilege of working with choreographers, dancers, researchers, institutions, and technology partners across Europe and Canada. Projects include an audience-controlled club night at the Brussels Electric Marathon, dance sonification collaborations with aerialist Ilona Jäntti and flamenco dancer Anna Myllymäki, the Algo project for Fundación Espacio Creativo in Panama City, and several performances with the Finnish experimental group Kokeellisen Elektroniikan Seura (Koelse).</p>
+        <p>In 2024, I created sonic interaction designs for Nancy Lee’s and Emmalena Fredriksson’s OSMOSi 422 performances, part of New Works’ Dance series for Vancouver New Music at The Annex, where I assisted composer Aleksandar Zecevic in sonifying the dancers’ movements. In 2025, I assisted the Chimerik collective and Giorgio Magnanensi in creating the interactive dance performance Inner Sublimity at Vancouver Art Gallery, as part of Push Festival. Recent projects include features for PXR Conference, participation in the New Works XR Beyond The Stage program, and an ongoing collaboration with the choreographer Kay Huang.</p>
+        <p>Since 2019, I have worked with Orbe on Creative Europe–supported projects including Vibes and Replay, developing interactive scores and systems for communal dance works involving audiences from toddlers to octogenarians. In collaboration with Coventry University’s Centre for Dance Research, Karen Wood, Rosemary Lee, Scott Delahunta, and I created interactive scores for Vibes#5 using accessible musical forms including polka, jig, contemporary classical minimalism, and New Orleans brass-band idioms. Vibes premiered at Birmingham International Dance Festival and was later presented at OperaEstate Festival.</p>
+        <p>Replay extended this work through audience-controlled scores, changing dance protocols, and game-like interaction structures. It also includes Infinite Dabke, created in collaboration with Palestinian choreographer Nur Garabli and Itzik Giuli from Yasmeen Godder Company. In Infinite Dabke, the music adapts continuously within traditional Dabke patterns, combining permanence with continuous fluctuation. Le Nouveaux Stade premiered at the Cultural Olympiad Paris 2024.</p>
+        <p>I am also active as a researcher and educator in experimental dance, interactive music, and large-scale musical interaction. As a collaborator with Queen Mary University of London’s Centre for Digital Music, I have supported doctoral and master’s research presented at AudioMostly and UbiMus. I have led workshops in schools, museums, and public programmes, including Oak House School in Barcelona, the Musical Instruments Museum in Brussels, Emily Carr University of Art + Design, and Toronto Metropolitan University.</p>
+      </div>
+
+      <div class="about-image-row about-image-row--landscape-pair" aria-label="Selected activities images">
+        <figure class="about-activity-figure">
+          <img
+            src="/about/vibes-birmingham.jpg"
+            width="910"
+            height="682"
+            alt="Vibes performance activity at Birmingham International Dance Festival"
+            class="about-activity-image about-activity-image--landscape about-activity-image--vibes"
+          />
+          <figcaption class="about-figure-caption">Vibes, Birmingham International Dance Festival</figcaption>
+        </figure>
+        <figure class="about-activity-figure">
+          <img
+            src="/about/fec-movesense.jpg"
+            width="1200"
+            height="1200"
+            alt="Fundación Espacio Creativo performance still with Movesense wearable"
+            class="about-activity-image about-activity-image--landscape"
+          />
+          <figcaption class="about-figure-caption">Fundación Espacio Creativo with Movesense</figcaption>
+        </figure>
+      </div>
+    </section>
+
+  </article>
+
+  <footer class="about-footer">
+    <a href="/" class="about-footer-mark" aria-label="Return to splash page">
+      <img src="/images/ove-logo-exact.png" alt="Ove geometric logo" class="about-footer-mark__image" />
+    </a>
+
+    <nav class="about-footer-nav meta" aria-label="Main">
+      <a href="/about" aria-current="page">About</a>
+      <a href="/works">Work</a>
+      <a href="mailto:ove@ove.fi" title="mailto: ove@ove.fi">Contact</a>
+    </nav>
+
+    <p class="about-footer-copy">Copyright © 2026 Ove Holmqvist and Associates. All Rights Reserved.</p>
+  </footer>
 </BaseLayout>
+
+<style>
+  .about-page {
+    width: 100%;
+    max-width: 72rem;
+    margin: 0 auto;
+    display: grid;
+    gap: 3.35rem;
+    padding: 2.5rem 2.9rem 2.9rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .about-panel {
+    margin: 0;
+  }
+
+  .about-panel + .about-panel {
+    border-top: 1px solid rgba(77, 111, 115, 0.14);
+    padding-top: 3rem;
+  }
+
+  .about-section-kicker {
+    display: block;
+    margin: 0 0 0.42rem;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .about-section-header {
+    margin-bottom: 1.18rem;
+  }
+
+  .about-section-header--center {
+    text-align: center;
+  }
+
+  .about-section-heading {
+    margin: 0;
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    line-height: 1.08;
+  }
+
+  .about-bio-name {
+    margin: 0;
+    font-size: clamp(1.75rem, 3.2vw, 2.35rem);
+    line-height: 1.05;
+  }
+
+  .about-bio-hero {
+    display: grid;
+    gap: 2.4rem;
+    grid-template-columns: minmax(0, 1.65fr) minmax(12rem, 0.75fr);
+    align-items: start;
+  }
+
+  .about-bio-copy-stack {
+    max-width: 47rem;
+  }
+
+  .about-bio-hero__copy {
+    max-width: 41rem;
+  }
+
+  .about-bio-hero__copy > p {
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  .about-bio-body {
+    margin-top: 1.25rem;
+  }
+
+  .about-bio-body p + p,
+  .about-activities-copy p + p,
+  .about-statement-column p + p {
+    margin-top: 1.25rem;
+  }
+
+  .about-bio-side-figure {
+    margin: 0;
+    width: min(100%, 16rem);
+    aspect-ratio: 1 / 1;
+    justify-self: center;
+    align-self: start;
+    margin-top: 0.7rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.58);
+  }
+
+  .about-bio-side-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 12%;
+  }
+
+  .about-bio-image-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: none;
+    margin-top: 2.15rem;
+  }
+
+  .about-bio-image-figure,
+  .about-activity-figure,
+  .about-wide-figure {
+    margin: 0;
+  }
+
+  .about-activity-figure,
+  .about-wide-figure {
+    background: rgba(245, 240, 230, 0.34);
+    border: 1px solid rgba(77, 111, 115, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .about-activity-figure {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .about-bio-image,
+  .about-activity-image,
+  .about-wide-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.56);
+  }
+
+  .about-activity-figure .about-activity-image,
+  .about-wide-figure .about-wide-image {
+    border-radius: 0;
+  }
+
+  .about-bio-image {
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .about-bio-image--patching {
+    object-position: center 20%;
+  }
+
+  .about-bio-image--sleeper {
+    object-position: center bottom;
+  }
+
+  .about-bio-note {
+    max-width: 54rem;
+    margin-top: 2.15rem;
+  }
+
+  .about-wide-figure {
+    margin-bottom: 1.8rem;
+  }
+
+  .about-statement-columns {
+    display: grid;
+    gap: 2.2rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-activities-copy--intro {
+    max-width: 45rem;
+  }
+
+  .about-activities-copy--body {
+    max-width: 52rem;
+    margin-top: 0.15rem;
+  }
+
+  .about-image-row {
+    display: grid;
+    gap: 1.2rem;
+    margin: 2rem 0;
+  }
+
+  .about-image-row--portrait-pair {
+    width: 100%;
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-image-row--landscape-pair {
+    width: 100%;
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-activity-image {
+    object-fit: cover;
+  }
+
+  .about-activity-image--portrait {
+    aspect-ratio: 4 / 5;
+    object-position: center top;
+  }
+
+  .about-activity-image--helsinki {
+    object-position: center 82%;
+  }
+
+  .about-activity-image--landscape {
+    aspect-ratio: 16 / 10;
+  }
+
+  .about-activity-image--vibes {
+    object-position: center 14%;
+  }
+
+  .about-figure-caption {
+    margin-top: 0.6rem;
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.35;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+
+  .about-activity-figure .about-figure-caption {
+    margin: 0;
+    padding: 0.72rem 0.95rem 0.88rem;
+    min-height: 3.25rem;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .about-wide-figure .about-figure-caption {
+    margin: 0;
+    padding: 0.72rem 0.95rem 0.88rem;
+  }
+
+  .about-footer {
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    text-align: center;
+    margin-top: 2.25rem;
+    padding-top: 0.35rem;
+  }
+
+  .about-footer-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+  }
+
+  .about-footer-mark__image {
+    display: block;
+    width: 7rem;
+    height: auto;
+  }
+
+  .about-footer-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.15rem;
+    transform: translateX(0.5rem);
+    font-size: 0.92rem;
+  }
+
+  .about-footer-nav a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .about-footer-nav a:hover,
+  .about-footer-nav a:focus-visible,
+  .about-footer-nav a[aria-current='page'] {
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+  }
+
+  .about-footer-copy {
+    margin: 0.35rem 0 0;
+    font-size: 0.64rem;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+
+  @media (max-width: 900px) {
+    .about-page {
+      gap: 2.75rem;
+      padding: 2rem 1.7rem 2.35rem;
+    }
+
+    .about-panel + .about-panel,
+    .about-footer {
+      padding-top: 2.35rem;
+    }
+
+    .about-bio-hero,
+    .about-statement-columns,
+    .about-image-row--portrait-pair,
+    .about-image-row--landscape-pair {
+      grid-template-columns: 1fr;
+    }
+
+    .about-bio-hero {
+      gap: 1.6rem;
+      align-items: start;
+    }
+
+    .about-bio-side-figure {
+      justify-self: start;
+    }
+
+    .about-bio-image-row,
+    .about-bio-note,
+    .about-activities-copy--intro,
+    .about-activities-copy--body,
+    .about-image-row--portrait-pair,
+    .about-image-row--landscape-pair {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .about-bio-image-row {
+      grid-template-columns: 1fr;
+    }
+
+    .about-footer-nav {
+      flex-wrap: wrap;
+      transform: none;
+    }
+  }
+</style>
