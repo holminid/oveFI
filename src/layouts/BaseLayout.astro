@@ -1,4 +1,7 @@
 ---
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/700.css';
 import '../styles/global.css';
 interface Props {
   title?: string;
@@ -88,10 +91,6 @@ const ogImageAbs = image ? new URL(image, site).href : undefined;
       </footer>
     )}
     <style is:global>
-      @import '@fontsource/inter/400.css';
-      @import '@fontsource/inter/500.css';
-      @import '@fontsource/inter/700.css';
-
       .site-footer {
         display: grid;
         justify-items: center;
