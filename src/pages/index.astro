@@ -1,9 +1,242 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
-<BaseLayout title="ove.fi — Home" description="Artist site">
-  <section class="py-10">
-    <img src="/works/placeholder/cover.jpg" width="1200" height="630" alt="Artist mark" class="w-full max-w-xl" />
-    <p class="mt-6 max-w-prose">Small statement about the current practice. Explore <a href="/works">Works</a> or read the <a href="/about">About</a> section.</p>
+<BaseLayout title="ove.fi — Home" description="Artist site" hideHeader={true} hideFooter={true}>
+  <section class="splash-stage">
+    <div class="splash-header">
+      <a href="/" class="site-mark" aria-label="Home">
+        <span class="splash-mark__frame">
+          <img src="/images/ove-logo-exact.png" alt="Ove geometric logo" class="splash-mark__image" />
+        </span>
+      </a>
+    </div>
+
+    <div class="splash-panel">
+      <div class="splash-grid">
+        <figure class="splash-frame">
+          <img
+            src="/images/splash-archival-portrait.png"
+            width="1711"
+            height="1279"
+            alt="Archival portrait of Ove Holmqvist"
+            class="splash-image"
+          />
+        </figure>
+
+        <div class="splash-copy prose-ove">
+          <div class="splash-copy-main">
+            <h1 class="text-4xl mb-6">Ove Holmqvist</h1>
+            <div class="splash-links meta">
+              <a href="/about" class="role-link">
+                <span class="role-link__base">Artist</span>
+                <span class="role-link__alt">Sound Artist</span>
+              </a>
+              <a href="/works" class="role-link">
+                <span class="role-link__base">Designer</span>
+                <span class="role-link__alt">Interaction Designer</span>
+              </a>
+              <a href="/works#research-education" class="role-link">
+                <span class="role-link__base">Technologist</span>
+                <span class="role-link__alt">Music Technologist</span>
+              </a>
+            </div>
+          </div>
+
+          <footer class="splash-footer meta">
+            <a href="mailto:ove@ove.fi">ove@ove.fi</a>
+          </footer>
+        </div>
+      </div>
+    </div>
   </section>
 </BaseLayout>
+
+<style>
+  .splash-stage {
+    position: relative;
+    left: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    min-height: 100svh;
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    padding: 1.8rem 1rem 2rem;
+    background: #efdbc8;
+  }
+
+  .splash-header {
+    width: min(100%, 72rem);
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3.8rem;
+  }
+
+  .splash-panel {
+    width: min(100%, 54rem);
+    min-height: 34rem;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(27, 27, 27, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 18px 48px rgba(27, 27, 27, 0.08);
+  }
+
+  .splash-mark__frame {
+    display: inline-flex;
+    width: 7rem;
+  }
+
+  .splash-mark__image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .splash-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 34rem;
+  }
+
+  .splash-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 10% 11%;
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .splash-frame {
+    margin: 0;
+    min-height: 34rem;
+  }
+
+  .splash-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 34rem;
+    padding: 2.5rem 2.7rem 2rem;
+  }
+
+  .splash-copy-main {
+    width: max-content;
+    max-width: 100%;
+    margin: auto;
+    padding-top: 2.35rem;
+    display: grid;
+    justify-items: center;
+  }
+
+  .splash-links {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 1.12rem;
+    justify-items: end;
+    width: 100%;
+    margin: 0;
+  }
+
+  .role-link {
+    position: relative;
+    display: inline-grid;
+    justify-items: end;
+    min-width: 0;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .role-link > span {
+    grid-area: 1 / 1;
+    transition: opacity 140ms ease;
+  }
+
+  .role-link__alt {
+    opacity: 0;
+  }
+
+  .role-link:hover,
+  .role-link:focus-visible {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-style: dotted;
+  }
+
+  .role-link:hover .role-link__base,
+  .role-link:focus-visible .role-link__base {
+    opacity: 0;
+  }
+
+  .role-link:hover .role-link__alt,
+  .role-link:focus-visible .role-link__alt {
+    opacity: 1;
+  }
+
+  .splash-footer {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .splash-copy h1 {
+    font-size: clamp(2rem, 4vw, 2.55rem);
+    line-height: 1.08;
+    white-space: nowrap;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+  }
+
+  @media (max-width: 900px) {
+    .splash-stage {
+      padding: 1.8rem 1rem 1.25rem;
+      align-content: start;
+    }
+
+    .splash-header {
+      width: min(100%, 72rem);
+      margin-bottom: 0.75rem;
+    }
+
+    .splash-panel {
+      min-height: 0;
+    }
+
+    .splash-grid {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+
+    .splash-frame {
+      min-height: 19rem;
+    }
+
+    .splash-copy {
+      min-height: 0;
+      max-width: none;
+      padding: 1.35rem;
+      text-align: left;
+    }
+
+    .splash-copy-main {
+      width: 100%;
+      padding-top: 0;
+    }
+
+    .splash-links {
+      justify-items: start;
+      transform: none;
+    }
+
+    .role-link {
+      min-width: 0;
+      justify-items: start;
+    }
+
+    .splash-copy h1 {
+      white-space: normal;
+    }
+  }
+</style>
