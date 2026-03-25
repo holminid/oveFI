@@ -246,7 +246,7 @@ const getDisplayTitle = (slug: string, fallback: string) => displayTitleBySlug.g
     </div>
 
     <div class="works-lower">
-      <section class="card works-section works-section--full works-section--design">
+      <section id="design" class="card works-section works-section--full works-section--design">
         <div class="prose-ove design-section-intro">
           <h2 class="text-2xl mb-3">Design</h2>
           <p class="max-w-4xl">I design and build experiential systems that combine audiovisual and physical interactions, with an emphasis on participatory experiences for audiences in cultural and applied contexts. I typically support projects from concept development through production.</p>
@@ -341,7 +341,7 @@ const getDisplayTitle = (slug: string, fallback: string) => displayTitleBySlug.g
                   <p>Holon.ist is the companion app to Holon and an open-world interactive music platform for emergent, mobile, and data-driven sonic experiences. It features sensor data mapping to OSC and MIDI messages, including from wearables like Apple Watch and Airpods, Movesense smart sensors and more.</p>
                   <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">The Holonic workflow reads incoming OSC, communicates with external users, devices, or services through our JavaScript sandbox, which processes and translates this data into OSM or MIDI. Holonic Systems' deep integration with standard tools, protocols and formats reveals possibilities of interactions that go beyond sonification and sound design to composition and sociomusicology and biomusicology.</p>
                   <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">Since its launch in 2019, Holon.ist has been used successfully by hundreds, if not thousands, of professional artists around the world in productions ranging from personal experiments to large-scale productions that are highly musical, theatrical, choreographic, and therapeutic. The Holon.ist mobile app, and its related plugins and services, have been central to collaborations with artists, enthusiasts and corporate clients and partners like Finnish sports technology manufacturer Suunto/Movesense and Native Instruments, Holonic Systems participation in the Bose AR beta for developers, and the partnership with mifki, the developers of miRack.</p>
-                  <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">The latest Holonic component is a cloud-based, OSC-controlled, tempo-synced multisampler with pitch shifting and time stretching, for AWS-based dynamic sample playback. Kaiseki was developed by Voxglitch and Holonic Systems to support Telharmonium Labs' mission to enable evolutionary development of any musical form. With Kaiseki, samples can be selected and loaded from inputs like location data, movement data, and biometric data. The Holon.ist preset can be shared to the Holon app with the corresponding miRack patch as a very small file.</p>
+                  <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">The latest Holonic component; Kaiseki, is a programmatically (OSC) controlled, tempo-synced, 8 track hot-swappable multisampler with pitch shifting and time stretching, for cloud-based structured audio and semantic music playback. Kaiseki was developed by Voxglitch and Holonic Systems to support Telharmonium Labs' mission to enable evolutionary development of any musical form. With Kaiseki, samples can be selected and loaded dynamically from live inputs like location, movement, and biometric data. The Holon.ist preset can be shared to the Holon app with the corresponding miRack patch as a very small file.</p>
                 </div>
                 <figure class="design-case-media design-case-media--kaiseki design-case-media--panel">
                   <img
@@ -581,7 +581,9 @@ const getDisplayTitle = (slug: string, fallback: string) => displayTitleBySlug.g
 <script is:inline define:vars={{ defaultSlug }}>
   const panels = Array.from(document.querySelectorAll('[data-work-panel]'));
   const links = Array.from(document.querySelectorAll('[data-work-link]'));
+  const selectedWorksAnchor = document.querySelector('.works-section-heading--selected');
   const validSlugs = new Set(panels.map((panel) => panel.dataset.slug).filter(Boolean));
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   const resolveSlug = () => {
     const url = new URL(window.location.href);
@@ -624,6 +626,13 @@ const getDisplayTitle = (slug: string, fallback: string) => displayTitleBySlug.g
     });
   };
 
+  const scrollSelectedWorksIntoView = () => {
+    selectedWorksAnchor?.scrollIntoView({
+      block: 'start',
+      behavior: prefersReducedMotion.matches ? 'auto' : 'smooth'
+    });
+  };
+
   links.forEach((link) => {
     link.addEventListener('click', (event) => {
       const href = link.getAttribute('href');
@@ -635,6 +644,7 @@ const getDisplayTitle = (slug: string, fallback: string) => displayTitleBySlug.g
       event.preventDefault();
       window.history.pushState({}, '', href);
       syncSelection();
+      requestAnimationFrame(scrollSelectedWorksIntoView);
     });
   });
 
