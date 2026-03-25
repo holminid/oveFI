@@ -1,18 +1,35 @@
 ---
 import '../styles/global.css';
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  lang?: string;
+  noindex?: boolean;
+  hideHeader?: boolean;
+  hideNav?: boolean;
+  hideFooter?: boolean;
+  logoSrc?: string;
+  logoAlt?: string;
+}
 const {
   title = 'ove.fi',
   description = 'Artist site',
+  image,
   lang = 'en',
+  noindex = false,
   hideHeader = false,
   hideNav = false,
   hideFooter = false,
   logoSrc = '/images/ove-logo-exact.png',
   logoAlt = 'Ove geometric logo'
-} = Astro.props;
+} = Astro.props as Props;
 const pathname = Astro.url.pathname;
 const isAbout = pathname === '/about' || pathname === '/about/';
 const isWork = pathname === '/works' || pathname === '/works/' || pathname.startsWith('/works/');
+const site = Astro.site ?? new URL('https://ove.fi');
+const canonical = new URL(Astro.url?.pathname ?? '/', site);
+const ogImageAbs = image ? new URL(image, site).href : undefined;
 ---
 <!DOCTYPE html>
 <html lang={lang}>
@@ -22,6 +39,17 @@ const isWork = pathname === '/works' || pathname === '/works/' || pathname.start
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" href="data:," />
+    <link rel="canonical" href={canonical.href} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ove.fi" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {ogImageAbs && <meta property="og:image" content={ogImageAbs} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImageAbs && <meta name="twitter:image" content={ogImageAbs} />}
   </head>
   <body>
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-brandYellow text-black px-3 py-1 rounded">Skip to content</a>

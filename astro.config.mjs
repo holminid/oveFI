@@ -1,8 +1,7 @@
-// astro.config.mjs
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import tailwind from '@astrojs/tailwind';
-import { fileURLToPath } from 'node:url'; // <-- add this
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   site: 'https://ove.fi',
@@ -10,7 +9,7 @@ export default defineConfig({
   integrations: [mdx(), tailwind({ applyBaseStyles: false })],
   vite: {
     resolve: {
-      alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) }, // <-- add this
+      alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     },
   },
 });
