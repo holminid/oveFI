@@ -221,12 +221,16 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     }
 
     .splash-copy-main {
-      width: 100%;
+      width: fit-content;
+      max-width: 100%;
+      margin-inline: auto;
       padding-top: 0;
+      justify-items: start;
     }
 
     .splash-links {
       justify-items: start;
+      width: fit-content;
       transform: none;
     }
 
@@ -237,6 +241,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
     .splash-copy h1 {
       white-space: normal;
+      text-align: left;
+      margin-inline: 0;
+      width: auto;
+    }
+
+    .splash-footer {
+      width: fit-content;
+      margin: 1.35rem auto 0;
+      text-align: left;
     }
   }
 </style>
