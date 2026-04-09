@@ -273,7 +273,8 @@ const getDisplayTitle = (slug: string, fallback: string) => displayTitleBySlug.g
                 <br /><br />
                 The Telharmonium musical world model defines music as enacted temporal narrative and an emergent system state.
               </p>
-              <p class="design-case-link-row"><a href="https://www.telharmonium.ca" class="design-case-link">www.telharmonium.ca</a></p>
+              <p class="design-case-link-row design-case-link-row--telharmonium"><a href="https://www.telharmonium.ca" class="design-case-link">www.telharmonium.ca</a></p>
+              <p class="design-case-support-note">Supported by Creative BC, the Province of British Columbia and the City of Vancouver</p>
             </div>
           </article>
 
@@ -339,8 +340,8 @@ const getDisplayTitle = (slug: string, fallback: string) => displayTitleBySlug.g
                 <div class="prose-ove design-case-copy--holonist">
                   <h4 class="text-lg mb-2">Holon.ist</h4>
                   <p>Holon.ist is the companion app to Holon and an open-world interactive music platform for emergent, mobile, and data-driven sonic experiences. It features sensor data mapping to OSC and MIDI messages, including from wearables like Apple Watch and Airpods, Movesense smart sensors and more.</p>
-                  <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">The Holonic workflow reads incoming OSC, communicates with external users, devices, or services through our JavaScript sandbox, which processes and translates this data into OSM or MIDI. Holonic Systems' deep integration with standard tools, protocols and formats reveals possibilities of interactions that go beyond sonification and sound design to composition and sociomusicology and biomusicology.</p>
-                  <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">Since its launch in 2019, Holon.ist has been used successfully by hundreds, if not thousands, of professional artists around the world in productions ranging from personal experiments to large-scale productions that are highly musical, theatrical, choreographic, and therapeutic. The Holon.ist mobile app, and its related plugins and services, have been central to collaborations with artists, enthusiasts and corporate clients and partners like Finnish sports technology manufacturer Suunto/Movesense and Native Instruments, Holonic Systems participation in the Bose AR beta for developers, and the partnership with mifki, the developers of miRack.</p>
+                  <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">The Holonic workflow reads incoming OSC, communicates with external users, devices, or services through our JavaScript sandbox, which processes and translates this data into OSC or MIDI. Holonic Systems' deep integration with standard tools, protocols and formats reveals possibilities of interactions that go beyond sonification and sound design to composition and sociomusicology and biomusicology.</p>
+                  <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">Since its launch in 2019, Holon.ist has been used successfully by hundreds, if not thousands, of professional artists around the world in productions ranging from personal experiments to large-scale productions that are highly musical, theatrical, choreographic, and therapeutic. The Holon.ist mobile app, and its related plugins and services, have been central to collaborations with artists, enthusiasts and corporate clients and partners like Finnish sports technology manufacturer Suunto/Movesense and Native Instruments, IFTTT, Estimote, Holonic Systems participation in the Bose AR beta for developers, and the partnership with mifki, the developers of miRack.</p>
                   <p class="design-case-paragraph-gap design-case-paragraph-gap--holonist">The latest Holonic component; Kaiseki, is a programmatically (OSC) controlled, tempo-synced, 8 track hot-swappable multisampler with pitch shifting and time stretching, for cloud-based structured audio and semantic music playback. Kaiseki was developed by Voxglitch and Holonic Systems to support Telharmonium Labs' mission to enable evolutionary development of any musical form. With Kaiseki, samples can be selected and loaded dynamically from live inputs like location, movement, and biometric data. The Holon.ist preset can be shared to the Holon app with the corresponding miRack patch as a very small file.</p>
                 </div>
                 <figure class="design-case-media design-case-media--kaiseki design-case-media--panel">
@@ -1188,6 +1189,16 @@ const getDisplayTitle = (slug: string, fallback: string) => displayTitleBySlug.g
   .design-case-link-row {
     margin-top: 2.2rem;
     padding-top: 0.6rem;
+  }
+
+  .design-case-link-row--telharmonium {
+    margin-bottom: 0;
+  }
+
+  .design-case-support-note {
+    margin: 0.8rem 0 1.2rem;
+    font-style: italic;
+    color: var(--muted);
   }
 
   .design-case-subtitle {
